@@ -44,6 +44,9 @@ app.put('/put', (req, res) => accountsController.putData(req, res, db));
 app.delete('/delete', (req, res) => accountsController.delData(req, res, db));
 app.post('/login', (req, res) => accountsController.loginData(req, res, db));
 app.get('/user/:id', (req, res) => accountsController.newData(req, res, db));
+//勤怠
+app.post('/attendance', (req, res) => accountsController.attData(req, res, db));
+app.get('/attendance/:accounts_id/:month', (req, res) => accountsController.getAttData(req, res, db));
 
 //サーバ接続
 app.listen(process.env.PORT || 3000, () => {

@@ -105,12 +105,41 @@ const delData = (req, res, db) => {
     }));
 }
 
+//勤怠
+const attData = async (req, res, db) => {
+  const { accounts_id, date, check_in_time, check_out_time, work_hours, remarks1, remarks2 } = req.body;
+
+  await db('attendance').insert({ accounts_id, date, check_in_time, check_out_time, work_hours, remarks1, remarks2 })
+  .returning('*')
+  .then(item => {
+  res.json(item);
+  })
+  .catch(err => res.status(400).json({
+      dbError: 'error'
+  }));
+}
+
+const getAttData = async (req, res, db) => {
+  const { accounts_id, month } = req.params;
+  try {
+    const attendance = await db('attendance')
+      .whereRaw('EXTRACT(MONTH FROM date) = ?', [month])
+      .andWhere('accounts_id', accounts_id);
+    res.json(attendance);
+  } catch (error) {
+    console.error('Error fetching attendance data:', error);
+    res.status(500).json({ error: 'Internal server error. Please try again later.' });
+  }
+};
+
 module.exports = {
   getData,
   postData,
   putData,
   delData,
   loginData,
-  newData
+  newData,
+  attData,
+  getAttData
 }
   
