@@ -1,0 +1,300 @@
+html {
+  font-family: "Yu Gothic Medium","遊ゴシック Medium",YuGothic,"遊ゴシック体","ヒラギノ角ゴ Pro W3",sans-serif;
+  background-color: #eeeeee;
+  color: #808080;
+}
+
+/* ログインページ */
+.LoginPage {
+  background-color: #eeeeee;
+  margin-top: 50px;
+  font-family: "Yu Gothic Medium","遊ゴシック Medium",YuGothic,"遊ゴシック体","ヒラギノ角ゴ Pro W3",sans-serif;
+  color: #808080;
+  text-align: center;
+}
+
+#login_email_input {
+  outline: none;
+  width: 250px;
+  margin-top: 50px;
+  border: 1px solid white
+}
+
+#login_email_input:focus {
+  border: 1px solid #808080
+}
+
+#login_password_input {
+  outline: none;
+  width: 250px;
+  margin-top: 10px;
+  border: 1px solid white
+}
+
+#login_password_input:focus {
+  border: 1px solid #808080
+}
+
+#login_button {
+  margin-top: 10px;
+  background-color: #266ebd;
+  color: white;
+  width: 250px;
+  border: 1px solid #266ebd;
+}
+
+#login_button:hover {
+  background-color: #023e8a;
+}
+
+#login_message {
+  margin-top: 20px;
+  height: 20px;
+  color: crimson;
+}
+
+#new_account_text {
+  margin-top: 20px;
+}
+
+#new_account_link {
+  color: inherit;
+}
+
+/* アカウント登録 */
+
+#new_account_page,#new_account_after {
+  background-color: #eeeeee;
+  margin-top: 50px;
+  font-family: "Yu Gothic Medium","遊ゴシック Medium",YuGothic,"遊ゴシック体","ヒラギノ角ゴ Pro W3",sans-serif;
+  color: #808080;
+  text-align: center;
+}
+
+#new_account_ones {
+  text-align: left;
+  margin-left: 30px;
+}
+
+#new_account_logo {
+  margin-top: -100px;
+}
+
+.new_account_input {
+  display: inline-block;
+  width: 300px;
+  height: 40px; 
+  line-height: 40px; 
+  vertical-align: middle; 
+  border: 1px solid white;
+  outline: none;
+}
+
+.new_account_input:focus {
+  border: 1px solid #808080
+}
+
+.new_account_label {
+  display: inline-block;
+  width: 100px;
+  height: 40px; 
+  line-height: 40px; 
+  vertical-align: middle; /* 垂直方向の中央揃え */
+}
+
+.new_account_form {
+  margin-top: 60px;
+}
+
+.new_account_button {
+  margin-top: 40px;
+  width: 100px;
+}
+
+#login_link {
+  color: inherit;
+  float: left;
+  margin-top: 100px;
+  margin-left: 30px;
+}
+
+.new_error {
+  color: crimson;
+  height: 20px;
+  margin-top: 5px;
+}
+
+#name_error {
+  margin-right: 20px;
+}
+
+#email_error {
+  margin-right: 10px;
+}
+
+#phone_error {
+  margin-left: 10px;
+}
+
+#pass_error {
+  margin-left: 25px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+  table-layout: fixed;
+}
+
+th:first-child {
+  width: 60px;
+}
+
+tr:nth-of-type(odd) {
+  background: #00dee0;
+}
+
+th {
+  background: #005454;
+  color: white;
+  font-weight: bold;
+}
+
+td,
+th {
+  padding: 5px;
+  border: 1px solid #00c2c2;
+  text-align: left;
+}
+
+/* アカウント登録後ページ */
+#account_after_text {
+  margin-top: 30px;
+}
+
+.new_container {
+  margin-top: 30px;
+}
+
+.new_row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.label {
+  width: 50%;
+  text-align: right; 
+  padding-right: 30px; 
+}
+
+.after_button {
+  align-items: center;
+  margin-top: 30px;
+}
+
+/* トップページ */
+.top_flex {
+  background-color: #eeeeee;
+  margin-top: 50px;
+  font-family: "Yu Gothic Medium","遊ゴシック Medium",YuGothic,"遊ゴシック体","ヒラギノ角ゴ Pro W3",sans-serif;
+  color: #808080;
+  display: flex;
+  width: 100%;
+}
+
+.all_button{
+  background-color: #266ebd;
+  color: white;
+  font-size: large;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  width: 180px;
+  height: 50px;
+  border: 6px outset #266ebd;
+  transition: 0.5s;
+} 
+
+.all_button:hover{
+  background-color: #023e8a;
+} 
+
+#top_ones_logo {
+  margin-left: 10px;
+}
+
+.box1{
+  display: flex;
+  flex-direction: column;
+  margin-top: 3%;
+  margin-left: 3%;
+  width: 15%;
+  /* background-color: aqua; */
+}
+
+.box2{
+  margin-top: 5%;
+  /* margin-left: 3%;
+  margin-right: 3%; */
+  width: 20%;
+  /* background-color: aqua; */
+}
+
+.box3{
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  /* background-color: aqua; */
+}
+
+#top_clock {
+  text-align: left;
+  margin-top: 50px;
+  margin-left: 98px;
+}
+
+#top_drop_flex {
+  display: flex;
+  margin-top: 30px;
+}
+
+#top_drop_text, #top_label {
+  margin-left: 98px;
+  margin-right: 5px;
+}
+
+#top_drop_comp {
+  outline: none;
+  border: 1px solid white
+}
+
+#top_drop:focus {
+  border: 1px solid #808080
+}
+
+#top_form {
+  margin-top: 50px;
+  width: 100%;
+  display: flex;
+}
+
+.textarea-top {
+  width: 600px;
+  height: 250px;
+  outline: none;
+  border: 1px solid white;
+}
+
+#top_button {
+  margin-top: 50px;
+  background-color: #266ebd;
+  color: white;
+  width: 150px;
+  border: 1px solid #266ebd;
+}
+
+#top_button:hover {
+  background-color: #023e8a;
+}
