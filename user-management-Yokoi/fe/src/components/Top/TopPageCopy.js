@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
 import TopButton from './TopButton';
 import OnesLogo from '../../images/ones-logo.png';
@@ -6,7 +6,10 @@ import DigitalClock from './DigitalClock';
 
 const TopPageCopy = () => {
 
-  const userId = localStorage.getItem('user');
+  const id = localStorage.getItem('user');
+
+  const [userData, setUserData] = useState(null);
+
   //特記事項
   const [selectedOption, setSelectedOption] = useState('');
   const pulChange = (event) => {
@@ -18,6 +21,24 @@ const TopPageCopy = () => {
   const handleChange = (event) => {
     setNote(event.target.value);
   };
+
+  useEffect(() => {
+    fetch(`http://localhost:3000/user/${id}`, {
+      method: 'get',
+      headers: {
+      'Content-Type': 'application/json'
+    }
+    })
+      .then(response => response.json())
+      .then(data => setUserData(data))
+      .catch(err => console.log(err));
+  }, [id]);
+
+  if (!userData) {
+    return <div>Loading...</div>;
+  }
+
+  
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -34,8 +55,8 @@ const TopPageCopy = () => {
         </div>
       </div>
       <div className = "box2">
+        <p>{userData.fullname}</p>
         お知らせ
-        {userId}
       </div>
       <div className = "box3">
         <h1>勤怠登録</h1>
