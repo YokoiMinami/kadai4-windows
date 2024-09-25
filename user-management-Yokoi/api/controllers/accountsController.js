@@ -31,11 +31,12 @@ const loginData = async (req, res, db) => {
   const { email, password } = req.body;
   try {
     const item = await db('accounts').where({ email }).first();
+    const user = item.id;
     if (item) {
       const isMatch = await bcrypt.compare(password, item.password);
       if (isMatch) {
         const token = jwt.sign({ id: item.id }, secretKey, { expiresIn: '1h' });
-        res.json({ token });
+        res.json({ token, user });
       } else {
         res.status(400).json({ error: 'Invalid credentials' });
       }

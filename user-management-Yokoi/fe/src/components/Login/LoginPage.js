@@ -20,7 +20,7 @@ function LoginPage() {
       .then(response => response.json())
       .then(data => {
         if (data.token) {
-          login(data.token); // トークンを保存して認証状態を更新
+          login(data.token, data.user); // トークンを保存し
           navigate('/top'); // トップページにリダイレクト
         } else {
           setMessage('ログイン情報が違います');

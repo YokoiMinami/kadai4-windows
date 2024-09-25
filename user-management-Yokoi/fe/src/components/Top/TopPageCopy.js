@@ -6,6 +6,7 @@ import DigitalClock from './DigitalClock';
 
 const TopPageCopy = () => {
 
+  const userId = localStorage.getItem('user');
   //特記事項
   const [selectedOption, setSelectedOption] = useState('');
   const pulChange = (event) => {
@@ -25,17 +26,18 @@ const TopPageCopy = () => {
 
 
   return (
-    <div class="top_flex">
-      <div class="box1">
+    <div className ="top_flex">
+      <div className ="box1">
         <TopButton />
         <div id='top_ones_logo'>
           <img src={OnesLogo} alt="Ones" style={{ width: '150px', height: '150px', objectFit: 'cover' }} />
         </div>
       </div>
-      <div class = "box2">
+      <div className = "box2">
         お知らせ
+        {userId}
       </div>
-      <div class = "box3">
+      <div className = "box3">
         <h1>勤怠登録</h1>
         <div id = 'top_clock'>
           <DigitalClock />
