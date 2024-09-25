@@ -117,17 +117,32 @@ const attData = async (req, res, db) => {
       dbError: 'error'
   }));
 }
+
+// const monthData = async (req, res, db) => {
+//   const { accounts_id, month } = req.params;
+//   try {
+//     const attendance = await db('attendance')
+//       .whereRaw('EXTRACT(MONTH FROM date) = ?', [month])
+//       .andWhere('accounts_id', accounts_id);
+//     res.json(attendance);
+//   } catch (error) {
+//     console.error('Error fetching attendance data:', error);
+//     res.status(500).json({ error: 'Internal server error. Please try again later.' });
+//   }
+// };
+
 const monthData = async (req, res, db) => {
   const { accounts_id, month } = req.params;
-  try {
-    const attendance = await db('attendance')
-      .whereRaw('EXTRACT(MONTH FROM date) = ?', [month])
-      .andWhere('accounts_id', accounts_id);
-    res.json(attendance);
-  } catch (error) {
-    console.error('Error fetching attendance data:', error);
-    res.status(500).json({ error: 'Internal server error. Please try again later.' });
-  }
+  db('attendance')
+    .whereRaw('EXTRACT(MONTH FROM date) = ?', [month])
+    .andWhere('accounts_id', accounts_id)
+    .then(attendance => {
+      res.json(attendance);
+    })
+    .catch(error => {
+      console.error('Error fetching attendance data:', error);
+      res.status(500).json({ error: 'Internal server error. Please try again later.' });
+    });
 };
 
 module.exports = {
@@ -139,6 +154,5 @@ module.exports = {
   newData,
   attData,
   monthData,
-  //dayData
 }
   

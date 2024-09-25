@@ -1,57 +1,35 @@
-// import React from 'react';
-// import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
-
-// const AttendanceTablePage = () => (
-//     <div>
-//       <h1>勤怠一覧</h1>
-//       <Link to="/top">Go back to Home Page</Link>
-//     </div>
-//   );
-
-// export default AttendanceTablePage;
-
-
-
-//カレンダーあり
 // import React, { useEffect, useState } from 'react';
-// import Calendar from 'react-calendar';
-// import 'react-calendar/dist/Calendar.css';
+// import { Link } from 'react-router-dom';
 
-// const AttendanceTablePage = () => {
-//   const [date, setDate] = useState(new Date());
+// const AttendanceTablePage = ({ month }) => {
 //   const [attendanceData, setAttendanceData] = useState([]);
 
 //   useEffect(() => {
 //     const fetchAttendance = async () => {
 //       const accounts_id = localStorage.getItem('user'); // ログインユーザーのIDを取得
-//       const selectedDate = date.toISOString().split('T')[0]; // 選択した日付をYYYY-MM-DD形式に変換
 //       try {
-//         const response = await fetch(`http://localhost:3000/attendance/${accounts_id}/${selectedDate}`);
+//         const response = await fetch(`http://localhost:3000/attendance/${accounts_id}/${month}`);
 //         const data = await response.json();
-//         console.log(data); // デバッグ用のログ
-//         setAttendanceData(Array.isArray(data) ? data : []);
+//         setAttendanceData(data);
 //       } catch (error) {
-//         console.error('出席データの取得エラー:', error);
+//         console.error('Error fetching attendance data:', error);
 //       }
 //     };
 //     fetchAttendance();
-//   }, [date]);
+//   }, [month]);
 
 //   return (
 //     <div>
-//       <Calendar onChange={setDate} value={date} />
-//       <h2>{date.toDateString()}の出欠状況</h2>
-//       {Array.isArray(attendanceData) ? (
-//         <ul>
-//           {attendanceData.map((record) => (
-//             <li key={record.id}>
-//               {record.date}：{record.check_in_time} - {record.check_out_time} ({record.work_hours.hours}時 {record.work_hours.minutes}分) - {record.remarks1}。{record.remarks2}
-//             </li>
-//           ))}
-//         </ul>
-//       ) : (
-//         <p>出席データがありません。</p>
-//       )}
+//       <h1>勤怠一覧</h1>
+//       <Link to="/top">ホームページに戻る</Link>
+//       <h2>{month}月の勤怠サマリー</h2>
+//       <ul>
+//         {attendanceData.map((record) => (
+//           <li key={record.id}>
+//             {record.date}: {record.check_in_time} - {record.check_out_time} ({record.work_hours.hours}時間 {record.work_hours.minutes}分) - {record.remarks1} {record.remarks2}
+//           </li>
+//         ))}
+//       </ul>
 //     </div>
 //   );
 // };
@@ -60,37 +38,94 @@
 
 
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const AttendanceTablePage = ({ month }) => {
   const [attendanceData, setAttendanceData] = useState([]);
+  const [daysInMonth, setDaysInMonth] = useState([]);
+
   useEffect(() => {
     const fetchAttendance = async () => {
       const accounts_id = localStorage.getItem('user'); // ログインユーザーのIDを取得
       try {
         const response = await fetch(`http://localhost:3000/attendance/${accounts_id}/${month}`);
         const data = await response.json();
-        setAttendanceData(data);
+        console.log(data); // レスポンスを確認
+        setAttendanceData(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Error fetching attendance data:', error);
+        setAttendanceData([]);
       }
     };
     fetchAttendance();
   }, [month]);
+
+  useEffect(() => {
+    const getDaysInMonth = (year, month) => {
+      const date = new Date(year, month, 1);
+      const days = [];
+      while (date.getMonth() === month) {
+        days.push(new Date(date));
+        date.setDate(date.getDate() + 1);
+      }
+      return days;
+    };
+
+    const currentYear = new Date().getFullYear();
+    const days = getDaysInMonth(currentYear, month - 1); // monthは1-12の範囲なので-1する
+    setDaysInMonth(days);
+  }, [month]);
+
+  const getDayOfWeek = (date) => {
+    return date.toLocaleDateString('ja-JP', { weekday: 'long' });
+  };
+
+  const findAttendanceRecord = (date) => {
+    const formattedDate = date.toISOString().split('T')[0];
+    console.log('Checking for date:', formattedDate);
+    return attendanceData.find(record => {
+      const recordDate = new Date(record.date).toISOString().split('T')[0];
+      return recordDate === formattedDate;
+    });
+  };  
+
   return (
     <div>
       <h1>勤怠一覧</h1>
-      <Link to="/top">Go back to Home Page</Link>
-      <h2>Attendance Summary for Month {month}</h2>
-      <ul>
-        {attendanceData.map((record) => (
-          <li key={record.id}>
-            {record.date}: {record.check_in_time} - {record.check_out_time} ({record.work_hours.hours} hours {record.work_hours.minutes} minutes) - {record.remarks1} {record.remarks2}
-          </li>
-        ))}
-      </ul>
+      <Link to="/top">ホームページに戻る</Link>
+      <h2>{month}月の勤怠サマリー</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>日付</th>
+            <th>曜日</th>
+            <th>出勤時間</th>
+            <th>退勤時間</th>
+            <th>勤務時間</th>
+            <th>備考1</th>
+            <th>備考2</th>
+          </tr>
+        </thead>
+        <tbody>
+          {daysInMonth.map((date) => {
+            const record = findAttendanceRecord(date);
+            return (
+              <tr key={date.toISOString()}>
+                <td>{date.toISOString().split('T')[0]}</td>
+                <td>{getDayOfWeek(date)}</td>
+                <td>{record ? record.check_in_time : '-'}</td>
+                <td>{record ? record.check_out_time : '-'}</td>
+                <td>{record ? `${record.work_hours.hours}時間 ${record.work_hours.minutes}分` : '-'}</td>
+                <td>{record ? record.remarks1 : '-'}</td>
+                <td>{record ? record.remarks2 : '-'}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 };
 
 export default AttendanceTablePage;
+
