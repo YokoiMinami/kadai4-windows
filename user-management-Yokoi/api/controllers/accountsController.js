@@ -108,7 +108,6 @@ const delData = (req, res, db) => {
 //勤怠
 const attData = async (req, res, db) => {
   const { accounts_id, date, check_in_time, check_out_time, work_hours, remarks1, remarks2 } = req.body;
-
   await db('attendance').insert({ accounts_id, date, check_in_time, check_out_time, work_hours, remarks1, remarks2 })
   .returning('*')
   .then(item => {
@@ -118,8 +117,7 @@ const attData = async (req, res, db) => {
       dbError: 'error'
   }));
 }
-
-const getAttData = async (req, res, db) => {
+const monthData = async (req, res, db) => {
   const { accounts_id, month } = req.params;
   try {
     const attendance = await db('attendance')
@@ -140,6 +138,7 @@ module.exports = {
   loginData,
   newData,
   attData,
-  getAttData
+  monthData,
+  //dayData
 }
   
