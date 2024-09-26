@@ -13,6 +13,8 @@ const TopPageCopy = () => {
   //勤怠情報
   const [remarks1, setRemarks1] = useState('');
   const [remarks2, setRemarks2] = useState('');
+  const [out_remarks1, setOutRemarks1] = useState('');
+  const [out_remarks2, setOutRemarks2] = useState('');
   const [isCheckedIn, setIsCheckedIn] = useState(false); // 出勤状態を管理するフラグ
 
   useEffect(() => {
@@ -95,8 +97,8 @@ const TopPageCopy = () => {
       accounts_id,
       date: currentDate,
       check_out_time: currentTime,
-      remarks1,
-      remarks2
+      out_remarks1: out_remarks1,
+      out_remarks2: out_remarks2
     };
 
     try {
@@ -132,13 +134,27 @@ const TopPageCopy = () => {
           <DigitalClock />
         </div>
         <div id='top_drop_flex'> 
-          <select value={remarks1} onChange={(e) => setRemarks1(e.target.value)}>
-            <option value="">選択してください</option>
-            <option value="遅刻">遅刻</option>
-            <option value="早退">早退</option>
-            <option value="休日出勤">休日出勤</option>
-          </select>
-          <textarea value={remarks2} onChange={(e) => setRemarks2(e.target.value)} />
+        {!isCheckedIn ? (
+            <>
+              <select value={remarks1} onChange={(e) => setRemarks1(e.target.value)}>
+                <option value="">選択してください</option>
+                <option value="遅刻">遅刻</option>
+                <option value="早退">早退</option>
+                <option value="休日出勤">休日出勤</option>
+              </select>
+              <textarea value={remarks2} onChange={(e) => setRemarks2(e.target.value)} />
+            </>
+          ) : (
+            <>
+              <select value={out_remarks1} onChange={(e) => setOutRemarks1(e.target.value)}>
+                <option value="">選択してください</option>
+                <option value="遅刻">遅刻</option>
+                <option value="早退">早退</option>
+                <option value="休日出勤">休日出勤</option>
+              </select>
+              <textarea value={out_remarks2} onChange={(e) => setOutRemarks2(e.target.value)} />
+            </>
+          )}
           <button onClick={isCheckedIn ? handleCheckOut : handleCheckIn}>
             {isCheckedIn ? '退勤' : '出勤'}
           </button>
