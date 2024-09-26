@@ -106,30 +106,75 @@ const delData = (req, res, db) => {
 }
 
 //勤怠
+// const attData = async (req, res, db) => {
+//   const { accounts_id, date, check_in_time, check_out_time, work_hours, remarks1, remarks2 } = req.body;
+//   await db('attendance').insert({ accounts_id, date, check_in_time, check_out_time, work_hours, remarks1, remarks2 })
+//   .returning('*')
+//   .then(item => {
+//   res.json(item);
+//   })
+//   .catch(err => res.status(400).json({
+//       dbError: 'error'
+//   }));
+// }
+
+
 const attData = async (req, res, db) => {
   const { accounts_id, date, check_in_time, check_out_time, work_hours, remarks1, remarks2 } = req.body;
-  await db('attendance').insert({ accounts_id, date, check_in_time, check_out_time, work_hours, remarks1, remarks2 })
-  .returning('*')
-  .then(item => {
-  res.json(item);
-  })
-  .catch(err => res.status(400).json({
-      dbError: 'error'
-  }));
+
+  try {
+    const userAttendance = await db('attendance').where({ accounts_id, date }).first();
+
+    if (userAttendance) {
+      if (userAttendance.is_checked_in) {
+        // 退勤登録
+        await db('attendance')
+          .where({ accounts_id, date })
+          .update({
+            check_out_time,
+            work_hours,
+            remarks1,
+            remarks2,
+            is_checked_in: false
+          });
+        res.status(200).send('退勤登録完了！');
+      } else {
+        res.status(400).send('既に退勤登録されています。');
+      }
+    } else {
+      // 出勤登録
+      await db('attendance').insert({
+        accounts_id,
+        date,
+        check_in_time,
+        remarks1,
+        remarks2,
+        is_checked_in: true
+      });
+      res.status(200).send('出勤登録完了！');
+    }
+  } catch (error) {
+    console.error('Error recording attendance:', error);
+    res.status(500).send('サーバーエラー');
+  }
 }
 
-// const monthData = async (req, res, db) => {
-//   const { accounts_id, month } = req.params;
-//   try {
-//     const attendance = await db('attendance')
-//       .whereRaw('EXTRACT(MONTH FROM date) = ?', [month])
-//       .andWhere('accounts_id', accounts_id);
-//     res.json(attendance);
-//   } catch (error) {
-//     console.error('Error fetching attendance data:', error);
-//     res.status(500).json({ error: 'Internal server error. Please try again later.' });
-//   }
-// };
+const attgetData =async (req, res, db) => {
+  const { id } = req.params;
+  const today = new Date().toISOString().split('T')[0];
+
+  try {
+    const userAttendance = await db('attendance').where({ accounts_id: parseInt(id, 10), date: today }).first();
+    if (userAttendance) {
+      res.json({ is_checked_in: userAttendance.is_checked_in });
+    } else {
+      res.json({ is_checked_in: false });
+    }
+  } catch (error) {
+    console.error('Error fetching attendance status:', error);
+    res.status(500).send('サーバーエラー');
+  }
+}
 
 const monthData = async (req, res, db) => {
   const { accounts_id, month } = req.params;
@@ -153,6 +198,7 @@ module.exports = {
   loginData,
   newData,
   attData,
+  attgetData,
   monthData,
 }
   

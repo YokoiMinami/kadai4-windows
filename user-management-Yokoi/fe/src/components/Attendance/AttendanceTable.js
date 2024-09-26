@@ -1,42 +1,3 @@
-// import React, { useEffect, useState } from 'react';
-// import { Link } from 'react-router-dom';
-
-// const AttendanceTablePage = ({ month }) => {
-//   const [attendanceData, setAttendanceData] = useState([]);
-
-//   useEffect(() => {
-//     const fetchAttendance = async () => {
-//       const accounts_id = localStorage.getItem('user'); // ログインユーザーのIDを取得
-//       try {
-//         const response = await fetch(`http://localhost:3000/attendance/${accounts_id}/${month}`);
-//         const data = await response.json();
-//         setAttendanceData(data);
-//       } catch (error) {
-//         console.error('Error fetching attendance data:', error);
-//       }
-//     };
-//     fetchAttendance();
-//   }, [month]);
-
-//   return (
-//     <div>
-//       <h1>勤怠一覧</h1>
-//       <Link to="/top">ホームページに戻る</Link>
-//       <h2>{month}月の勤怠サマリー</h2>
-//       <ul>
-//         {attendanceData.map((record) => (
-//           <li key={record.id}>
-//             {record.date}: {record.check_in_time} - {record.check_out_time} ({record.work_hours.hours}時間 {record.work_hours.minutes}分) - {record.remarks1} {record.remarks2}
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// };
-
-// export default AttendanceTablePage;
-
-
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -50,7 +11,6 @@ const AttendanceTablePage = ({ month }) => {
       try {
         const response = await fetch(`http://localhost:3000/attendance/${accounts_id}/${month}`);
         const data = await response.json();
-        console.log(data); // レスポンスを確認
         setAttendanceData(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Error fetching attendance data:', error);
@@ -82,13 +42,20 @@ const AttendanceTablePage = ({ month }) => {
 
   const findAttendanceRecord = (date) => {
     const formattedDate = date.toISOString().split('T')[0];
-    console.log('Checking for date:', formattedDate);
     return attendanceData.find(record => {
       const recordDate = new Date(record.date).toISOString().split('T')[0];
+      if (record.work_hours) {
+        if (record.work_hours.minutes === undefined) {
+          record.work_hours.minutes = '00';
+        } else {
+          record.work_hours.minutes = record.work_hours.minutes.toString().padStart(2, '0');
+        }
+      }
+      console.log(record.work_hours);
       return recordDate === formattedDate;
     });
-  };  
-
+  };
+  
   return (
     <div>
       <h1>勤怠一覧</h1>
@@ -128,4 +95,3 @@ const AttendanceTablePage = ({ month }) => {
 };
 
 export default AttendanceTablePage;
-

@@ -46,8 +46,9 @@ app.post('/login', (req, res) => accountsController.loginData(req, res, db));
 app.get('/user/:id', (req, res) => accountsController.newData(req, res, db));
 //勤怠
 app.post('/attendance', (req, res) => accountsController.attData(req, res, db));
+app.get('/attendance/status/:id', (req, res) => accountsController.attgetData(req, res, db));
+
 app.get('/attendance/:accounts_id/:month', (req, res) => accountsController.monthData(req, res, db));
-//app.get('/attendance/:accounts_id/:date', (req, res) => accountsController.dayData(req, res, db));
 
 
 //サーバ接続
