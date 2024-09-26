@@ -46,17 +46,17 @@ const TopPageCopy = () => {
     return <div>Loading...</div>;
   }
 
-  const calculateWorkHours = (checkIn, checkOut) => {
-    const checkInTime = new Date(`1970-01-01T${checkIn}:00`);
-    const checkOutTime = checkOut ? new Date(`1970-01-01T${checkOut}:00`) : new Date();
-    if (isNaN(checkInTime) || isNaN(checkOutTime)) {
-      return '0 hours 0 minutes';
-    }
-    const diff = checkOutTime - checkInTime;
-    const hours = Math.floor(diff / 1000 / 60 / 60);
-    const minutes = Math.floor((diff / 1000 / 60) % 60);
-    return `${hours} hours ${minutes} minutes`;
-  };
+  // const calculateWorkHours = (checkIn, checkOut) => {
+  //   const checkInTime = new Date(`1970-01-01T${checkIn}:00`);
+  //   const checkOutTime = checkOut ? new Date(`1970-01-01T${checkOut}:00`) : new Date();
+  //   if (isNaN(checkInTime) || isNaN(checkOutTime)) {
+  //     return '0 hours 0 minutes';
+  //   }
+  //   const diff = checkOutTime - checkInTime;
+  //   const hours = Math.floor(diff / 1000 / 60 / 60);
+  //   const minutes = Math.floor((diff / 1000 / 60) % 60);
+  //   return `${hours} hours ${minutes} minutes`;
+  // };
   
   const handleCheckIn = async () => {
     const accounts_id = localStorage.getItem('user');
@@ -92,22 +92,57 @@ const TopPageCopy = () => {
     const now = new Date();
     const currentDate = now.toISOString().split('T')[0];
     const currentTime = now.toTimeString().split(' ')[0];
-
+    const date = now.toISOString().split('T')[0];
+  
+    // 出勤時刻を取得するためのAPI呼び出し
+    let checkInTime;
+    try {
+      const response = await fetch(`http://localhost:3000/attendance/checkin/${accounts_id}/${date}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      checkInTime = data.check_in_time;
+    } catch (error) {
+      console.error('Error fetching check-in time:', error);
+      alert('出勤時刻の取得に失敗しました。');
+      return;
+    }
+  
+    // 勤務時間を計算
+    const calculateWorkHours = (checkIn, checkOut) => {
+      const checkInTime = new Date(`1970-01-01T${checkIn}:00`);
+      const checkOutTime = new Date(`1970-01-01T${checkOut}:00`);
+      if (isNaN(checkInTime) || isNaN(checkOutTime)) {
+        return '0 hours 0 minutes';
+      }
+      const diff = checkOutTime - checkInTime;
+      const hours = Math.floor(diff / 1000 / 60 / 60);
+      const minutes = Math.floor((diff / 1000 / 60) % 60);
+      return `${hours} hours ${minutes} minutes`;
+    };
+  
+    const workHours = calculateWorkHours(checkInTime, currentTime);
+  
     const requestBody = {
       accounts_id,
       date: currentDate,
       check_out_time: currentTime,
+      work_hours: workHours,
       out_remarks1: out_remarks1,
       out_remarks2: out_remarks2
     };
-
+  
     try {
       const response = await fetch('http://localhost:3000/attendance', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
       });
-
+  
       const message = await response.text();
       alert(message);
       setIsCheckedIn(false); // 出勤状態を更新
@@ -115,6 +150,7 @@ const TopPageCopy = () => {
       console.error('Error recording attendance:', error);
     }
   };
+  
   
   return (
     <div className ="top_flex">

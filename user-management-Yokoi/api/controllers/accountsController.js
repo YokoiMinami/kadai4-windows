@@ -159,7 +159,7 @@ const attData = async (req, res, db) => {
   }
 }
 
-const attgetData =async (req, res, db) => {
+const attgetData = async (req, res, db) => {
   const { id } = req.params;
   const today = new Date().toISOString().split('T')[0];
 
@@ -172,6 +172,22 @@ const attgetData =async (req, res, db) => {
     }
   } catch (error) {
     console.error('Error fetching attendance status:', error);
+    res.status(500).send('サーバーエラー');
+  }
+}
+
+const checkIn = async (req, res, db) => {
+  const { accounts_id,date } = req.params;
+  
+  try {
+    const userAttendance = await db('attendance').where({ accounts_id, date }).first();
+    if (userAttendance) {
+      res.json({ check_in_time: userAttendance.check_in_time });
+    } else {
+      res.status(404).send('出勤記録が見つかりません。');
+    }
+  } catch (error) {
+    console.error('Error fetching check-in time:', error);
     res.status(500).send('サーバーエラー');
   }
 }
@@ -199,6 +215,7 @@ module.exports = {
   newData,
   attData,
   attgetData,
+  checkIn,
   monthData,
 }
   
