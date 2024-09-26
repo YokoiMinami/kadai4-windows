@@ -245,19 +245,26 @@ th {
   width: 60%;
   display: flex;
   flex-direction: column;
-  text-align: center;
+  align-items: center;
   /* background-color: aqua; */
 }
 
 #top_clock {
-  text-align: left;
   margin-top: 50px;
-  margin-left: 98px;
+  margin-right: 45%;
 }
 
-#top_drop_flex {
+.top_drop_flex {
   display: flex;
   margin-top: 30px;
+}
+
+#toppull {
+  margin-right: 47%;
+}
+
+#toptextarea {
+  margin-right: 12%;
 }
 
 #top_drop_text, #top_label {
@@ -265,9 +272,10 @@ th {
   margin-right: 5px;
 }
 
-#top_drop_comp {
+.top_drop_comp {
   outline: none;
-  border: 1px solid white
+  border: 1px solid white;
+  width: 200px;
 }
 
 #top_drop:focus {
@@ -293,6 +301,7 @@ th {
   color: white;
   width: 150px;
   border: 1px solid #266ebd;
+  align-items: center;
 }
 
 #top_button:hover {

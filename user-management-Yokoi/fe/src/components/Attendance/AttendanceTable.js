@@ -44,18 +44,10 @@ const AttendanceTablePage = ({ month }) => {
     const formattedDate = date.toISOString().split('T')[0];
     return attendanceData.find(record => {
       const recordDate = new Date(record.date).toISOString().split('T')[0];
-      if (record.work_hours) {
-        if (record.work_hours.minutes === undefined) {
-          record.work_hours.minutes = '00';
-        } else {
-          record.work_hours.minutes = record.work_hours.minutes.toString().padStart(2, '0');
-        }
-      }
-      console.log(record.work_hours);
       return recordDate === formattedDate;
     });
   };
-  
+
   return (
     <div>
       <h1>勤怠一覧</h1>
@@ -67,10 +59,12 @@ const AttendanceTablePage = ({ month }) => {
             <th>日付</th>
             <th>曜日</th>
             <th>出勤時間</th>
+            <th>特記</th>
+            <th>出勤備考</th>
             <th>退勤時間</th>
+            <th>特記</th>
+            <th>退勤備考</th>
             <th>勤務時間</th>
-            <th>備考1</th>
-            <th>備考2</th>
           </tr>
         </thead>
         <tbody>
@@ -81,10 +75,12 @@ const AttendanceTablePage = ({ month }) => {
                 <td>{date.toISOString().split('T')[0]}</td>
                 <td>{getDayOfWeek(date)}</td>
                 <td>{record ? record.check_in_time : '-'}</td>
-                <td>{record ? record.check_out_time : '-'}</td>
-                <td>{record ? `${record.work_hours.hours}時間 ${record.work_hours.minutes}分` : '-'}</td>
                 <td>{record ? record.remarks1 : '-'}</td>
                 <td>{record ? record.remarks2 : '-'}</td>
+                <td>{record ? record.check_out_time : '-'}</td>
+                <td>{record ? record.out_remarks1 : '-'}</td>
+                <td>{record ? record.out_remarks2 : '-'}</td>
+                <td>{record && record.work_hours ? `${record.work_hours.hours}時間 ${record.work_hours.minutes}分` : '-'}</td>
               </tr>
             );
           })}

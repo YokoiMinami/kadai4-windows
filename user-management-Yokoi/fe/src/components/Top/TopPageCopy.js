@@ -169,32 +169,58 @@ const TopPageCopy = () => {
         <div id = 'top_clock'>
           <DigitalClock />
         </div>
-        <div id='top_drop_flex'> 
-        {!isCheckedIn ? (
+          {!isCheckedIn ? (
             <>
-              <select value={remarks1} onChange={(e) => setRemarks1(e.target.value)}>
-                <option value="">選択してください</option>
-                <option value="遅刻">遅刻</option>
-                <option value="早退">早退</option>
-                <option value="休日出勤">休日出勤</option>
-              </select>
-              <textarea value={remarks2} onChange={(e) => setRemarks2(e.target.value)} />
+              <div className='top_drop_flex' id='toppull'>
+                <div id='top_drop_text'>
+                  特記 : 
+                </div>
+                <div>
+                  <select className='top_drop_comp' value={remarks1} onChange={(e) => setRemarks1(e.target.value)}>
+                    <option value="">選択してください</option>
+                    <option value="遅刻">遅刻</option>
+                    <option value="早退">早退</option>
+                    <option value="休日出勤">休日出勤</option>
+                  </select>
+                </div>
+              </div>
+              <div className='top_drop_flex' id='toptextarea'>
+                <div>
+                  <label id='top_label'>備考 : </label>
+                </div>
+                <div>
+                  <textarea className="textarea-top" value={remarks2} onChange={(e) => setRemarks2(e.target.value)} />
+                </div>
+              </div>
             </>
           ) : (
             <>
-              <select value={out_remarks1} onChange={(e) => setOutRemarks1(e.target.value)}>
-                <option value="">選択してください</option>
-                <option value="遅刻">遅刻</option>
-                <option value="早退">早退</option>
-                <option value="休日出勤">休日出勤</option>
-              </select>
-              <textarea value={out_remarks2} onChange={(e) => setOutRemarks2(e.target.value)} />
+            <div className='top_drop_flex'id='toppull'>
+              <div id='top_drop_text'>
+                特記 : 
+              </div>
+              <div>
+                <select className='top_drop_comp' value={out_remarks1} onChange={(e) => setOutRemarks1(e.target.value)}>
+                  <option value="">選択してください</option>
+                  <option value="遅刻">遅刻</option>
+                  <option value="早退">早退</option>
+                  <option value="休日出勤">休日出勤</option>
+                </select>
+              </div>
+            </div>
+            <div className='top_drop_flex'  id='toptextarea'>
+              <div>
+                <label id='top_label'>備考 : </label>
+              </div>
+              <div>
+                <textarea className="textarea-top" value={out_remarks2} onChange={(e) => setOutRemarks2(e.target.value)} />
+              </div>
+            </div>
             </>
           )}
-          <button onClick={isCheckedIn ? handleCheckOut : handleCheckIn}>
+          <button id='top_button' onClick={isCheckedIn ? handleCheckOut : handleCheckIn}>
             {isCheckedIn ? '退勤' : '出勤'}
           </button>
-        </div>
       </div>
     </div>
   );
