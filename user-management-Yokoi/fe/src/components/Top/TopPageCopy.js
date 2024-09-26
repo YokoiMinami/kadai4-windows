@@ -46,18 +46,6 @@ const TopPageCopy = () => {
     return <div>Loading...</div>;
   }
 
-  // const calculateWorkHours = (checkIn, checkOut) => {
-  //   const checkInTime = new Date(`1970-01-01T${checkIn}:00`);
-  //   const checkOutTime = checkOut ? new Date(`1970-01-01T${checkOut}:00`) : new Date();
-  //   if (isNaN(checkInTime) || isNaN(checkOutTime)) {
-  //     return '0 hours 0 minutes';
-  //   }
-  //   const diff = checkOutTime - checkInTime;
-  //   const hours = Math.floor(diff / 1000 / 60 / 60);
-  //   const minutes = Math.floor((diff / 1000 / 60) % 60);
-  //   return `${hours} hours ${minutes} minutes`;
-  // };
-  
   const handleCheckIn = async () => {
     const accounts_id = localStorage.getItem('user');
     const now = new Date();
@@ -111,15 +99,16 @@ const TopPageCopy = () => {
       alert('出勤時刻の取得に失敗しました。');
       return;
     }
-  
+    
     // 勤務時間を計算
-    const calculateWorkHours = (checkIn, checkOut) => {
-      const checkInTime = new Date(`1970-01-01T${checkIn}:00`);
-      const checkOutTime = new Date(`1970-01-01T${checkOut}:00`);
-      if (isNaN(checkInTime) || isNaN(checkOutTime)) {
+    const calculateWorkHours = (checkInTime, currentTime) => {
+      // const checkInTime = new Date(`1970-01-01T${checkIn}:00`);
+      //const checkOutTime = new Date(`1970-01-01T${checkOut}:00`);
+      if (isNaN(checkInTime) || isNaN(currentTime)) {
         return '0 hours 0 minutes';
       }
-      const diff = checkOutTime - checkInTime;
+      const diff = currentTime - checkInTime;
+      console.log(diff);
       const hours = Math.floor(diff / 1000 / 60 / 60);
       const minutes = Math.floor((diff / 1000 / 60) % 60);
       return `${hours} hours ${minutes} minutes`;
@@ -208,7 +197,7 @@ const TopPageCopy = () => {
                 </select>
               </div>
             </div>
-            <div className='top_drop_flex'  id='toptextarea'>
+            <div className='top_drop_flex' id='toptextarea'>
               <div>
                 <label id='top_label'>備考 : </label>
               </div>

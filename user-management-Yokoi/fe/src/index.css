@@ -235,8 +235,6 @@ th {
 
 .box2{
   margin-top: 5%;
-  /* margin-left: 3%;
-  margin-right: 3%; */
   width: 20%;
   /* background-color: aqua; */
 }
@@ -306,4 +304,11 @@ th {
 
 #top_button:hover {
   background-color: #023e8a;
+}
+
+/* アカウント一覧 */
+#table_flex {
+  font-family: "Yu Gothic Medium","遊ゴシック Medium",YuGothic,"遊ゴシック体","ヒラギノ角ゴ Pro W3",sans-serif;
+  background-color: #eeeeee;
+  color: #808080;
 }

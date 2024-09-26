@@ -2,6 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const AttendanceTablePage = ({ month }) => {
+
+  //ユーザー情報
+  const id = localStorage.getItem('user');
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    fetch(`http://localhost:3000/user/${id}`, {
+      method: 'get',
+      headers: {
+      'Content-Type': 'application/json'
+    }
+    })
+      .then(response => response.json())
+      .then(data => setUserData(data))
+      .catch(err => console.log(err));
+  }, [id]);
+
+
   const [attendanceData, setAttendanceData] = useState([]);
   const [daysInMonth, setDaysInMonth] = useState([]);
 
@@ -49,43 +67,46 @@ const AttendanceTablePage = ({ month }) => {
   };
 
   return (
-    <div>
-      <h1>勤怠一覧</h1>
-      <Link to="/top">ホームページに戻る</Link>
-      <h2>{month}月の勤怠サマリー</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>日付</th>
-            <th>曜日</th>
-            <th>出勤時間</th>
-            <th>特記</th>
-            <th>出勤備考</th>
-            <th>退勤時間</th>
-            <th>特記</th>
-            <th>退勤備考</th>
-            <th>勤務時間</th>
-          </tr>
-        </thead>
-        <tbody>
-          {daysInMonth.map((date) => {
-            const record = findAttendanceRecord(date);
-            return (
-              <tr key={date.toISOString()}>
-                <td>{date.toISOString().split('T')[0]}</td>
-                <td>{getDayOfWeek(date)}</td>
-                <td>{record ? record.check_in_time : '-'}</td>
-                <td>{record ? record.remarks1 : '-'}</td>
-                <td>{record ? record.remarks2 : '-'}</td>
-                <td>{record ? record.check_out_time : '-'}</td>
-                <td>{record ? record.out_remarks1 : '-'}</td>
-                <td>{record ? record.out_remarks2 : '-'}</td>
-                <td>{record && record.work_hours ? `${record.work_hours.hours}時間 ${record.work_hours.minutes}分` : '-'}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <div id='table_flex'>
+      <div id='table_box1'>
+      </div>
+      <div id='table_box2' >
+        <h1>勤怠一覧</h1>
+        <h2>{month}月</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>日付</th>
+              <th>曜日</th>
+              <th>出勤時間</th>
+              <th>特記</th>
+              <th>出勤備考</th>
+              <th>退勤時間</th>
+              <th>特記</th>
+              <th>退勤備考</th>
+              <th>勤務時間</th>
+            </tr>
+          </thead>
+          <tbody>
+            {daysInMonth.map((date) => {
+              const record = findAttendanceRecord(date);
+              return (
+                <tr key={date.toISOString()}>
+                  <td>{date.toISOString().split('T')[0]}</td>
+                  <td>{getDayOfWeek(date)}</td>
+                  <td>{record ? record.check_in_time : '-'}</td>
+                  <td>{record ? record.remarks1 : '-'}</td>
+                  <td>{record ? record.remarks2 : '-'}</td>
+                  <td>{record ? record.check_out_time : '-'}</td>
+                  <td>{record ? record.out_remarks1 : '-'}</td>
+                  <td>{record ? record.out_remarks2 : '-'}</td>
+                  <td>{record && record.work_hours ? `${record.work_hours.hours}時間 ${record.work_hours.minutes}分` : '-'}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
