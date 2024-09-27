@@ -83,7 +83,7 @@ const TopPageCopy = () => {
     const date = now.toISOString().split('T')[0];
   
     // 出勤時刻を取得するためのAPI呼び出し
-    let checkInTime;
+    let checkinTime;
     try {
       const response = await fetch(`http://localhost:3000/attendance/checkin/${accounts_id}/${date}`, {
         method: 'GET',
@@ -93,31 +93,36 @@ const TopPageCopy = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      checkInTime = data.check_in_time;
+      checkinTime = data.check_in_time;
     } catch (error) {
       console.error('Error fetching check-in time:', error);
       alert('出勤時刻の取得に失敗しました。');
       return;
     }
-    
+  
     // 勤務時間を計算
-    const calculateWorkHours = (checkInTime, currentTime) => {
-      //const checkInTime = new Date(`1970-01-01T${checkIn}:00`);
-      //const checkOutTime = new Date(`1970-01-01T${checkOut}:00`);
-      console.log(currentTime);
-      console.log(currentTime);
+    const calculateWorkHours = (checkInTimeString, checkOutTimeString) => {
+      // 時間文字列をDateオブジェクトに変換
+      const checkInTime = new Date(`1970-01-01T${checkInTimeString}`);
+      const checkOutTime = new Date(`1970-01-01T${checkOutTimeString}`);
+      console.log(checkInTime); // 1970-01-01T13:16:06.000Z
+      console.log(checkOutTime); // 1970-01-01T14:27:31.000Z
+  
+      // 日付の有効性をチェック
       const isValidDate = (date) => date instanceof Date && !isNaN(date);
-      if (!isValidDate(checkInTime) || !isValidDate(currentTime)) {
+      if (!isValidDate(checkInTime) || !isValidDate(checkOutTime)) {
         return '0 hours 0 minutes';
       }
-      const diff = currentTime - checkInTime;
+  
+      // 時間の差を計算
+      const diff = checkOutTime - checkInTime;
       console.log(diff);
       const hours = Math.floor(diff / 1000 / 60 / 60);
       const minutes = Math.floor((diff / 1000 / 60) % 60);
       return `${hours} hours ${minutes} minutes`;
     };
   
-    const workHours = calculateWorkHours(checkInTime, currentTime);
+    const workHours = calculateWorkHours(checkinTime, currentTime);
   
     const requestBody = {
       accounts_id,
@@ -142,7 +147,6 @@ const TopPageCopy = () => {
       console.error('Error recording attendance:', error);
     }
   };
-  
   
   return (
     <div className ="top_flex">
