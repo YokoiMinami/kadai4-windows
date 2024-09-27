@@ -178,7 +178,6 @@ const attgetData = async (req, res, db) => {
 
 const checkIn = async (req, res, db) => {
   const { accounts_id,date } = req.params;
-  
   try {
     const userAttendance = await db('attendance').where({ accounts_id, date }).first();
     if (userAttendance) {
@@ -194,7 +193,7 @@ const checkIn = async (req, res, db) => {
 
 const monthData = async (req, res, db) => {
   const { accounts_id, month } = req.params;
-  db('attendance')
+    db('attendance')
     .whereRaw('EXTRACT(MONTH FROM date) = ?', [month])
     .andWhere('accounts_id', accounts_id)
     .then(attendance => {
@@ -205,6 +204,45 @@ const monthData = async (req, res, db) => {
       res.status(500).json({ error: 'Internal server error. Please try again later.' });
     });
 };
+
+const overUser = async (req, res, db) => {
+  const { accounts_id } = req.params;
+  try {
+    const item = await db('overdata').where({ accounts_id }).first();
+    if (item) {
+      res.json( item );
+    } else {
+      res.status(404).send('保存データが見つかりません。');
+    }
+  } catch (error) {
+    console.error('Error fetching check-in time:', error);
+    res.status(500).send('サーバーエラー');
+  }
+}
+
+const overData = async (req, res, db) => {
+  const { accounts_id, start_time, end_time, break_time, work_hours } = req.body;
+  const overUser = await db('overdata').where({ accounts_id }).first();
+  if(overUser){
+    await db('overdata').where({ accounts_id }).update({ start_time, end_time, break_time, work_hours })
+    .returning('*')
+    .then(item => {
+    res.json(item);
+    })
+    .catch(err => res.status(400).json({
+      dbError: 'error'
+    }));
+  }else {
+    await db('overdata').insert({accounts_id, start_time, end_time, break_time, work_hours})
+    .returning('*')
+    .then(item => {
+    res.json(item);
+    })
+    .catch(err => res.status(400).json({
+      dbError: 'error'
+    }));
+  }
+}
 
 module.exports = {
   getData,
@@ -217,5 +255,7 @@ module.exports = {
   attgetData,
   checkIn,
   monthData,
+  overData,
+  overUser
 }
   

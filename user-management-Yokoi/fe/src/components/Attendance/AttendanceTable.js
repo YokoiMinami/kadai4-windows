@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from 'react';
-//import { Table, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 const AttendanceTablePage = ({ month }) => {
-
-  //ユーザー情報
   const id = localStorage.getItem('user');
   const [userData, setUserData] = useState(null);
-  
   const [attendanceData, setAttendanceData] = useState([]);
+  const [overData, setOverData] = useState({});
   const [daysInMonth, setDaysInMonth] = useState([]);
+  const [startTime, setStartTime] = useState('09:00');
+  const [endTime, setEndTime] = useState('18:00');
+  const [breakTime, setBreakTime] = useState('01:00');
+  const [workHours, setWorkHours] = useState('');
 
   useEffect(() => {
     fetch(`http://localhost:3000/user/${id}`, {
       method: 'get',
       headers: {
-      'Content-Type': 'application/json'
-    }
+        'Content-Type': 'application/json'
+      }
     })
       .then(response => response.json())
       .then(data => setUserData(data))
@@ -24,8 +25,27 @@ const AttendanceTablePage = ({ month }) => {
   }, [id]);
 
   useEffect(() => {
+    const accounts_id = localStorage.getItem('user');
+    fetch(`http://localhost:3000/overuser/${accounts_id}`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setOverData(data);
+        if (data.start_time) setStartTime(data.start_time);
+        if (data.end_time) setEndTime(data.end_time);
+        if (data.break_time) setBreakTime(data.break_time);
+        if (data.work_hours) setWorkHours(data.work_hours);
+      })
+      .catch(err => console.log(err));
+  }, [id]);
+
+  useEffect(() => {
     const fetchAttendance = async () => {
-      const accounts_id = localStorage.getItem('user'); // ログインユーザーのIDを取得
+      const accounts_id = localStorage.getItem('user');
       try {
         const response = await fetch(`http://localhost:3000/attendance/${accounts_id}/${month}`);
         const data = await response.json();
@@ -50,7 +70,7 @@ const AttendanceTablePage = ({ month }) => {
     };
 
     const currentYear = new Date().getFullYear();
-    const days = getDaysInMonth(currentYear, month - 1); // monthは1-12の範囲なので-1する
+    const days = getDaysInMonth(currentYear, month - 1);
     setDaysInMonth(days);
   }, [month]);
 
@@ -76,14 +96,79 @@ const AttendanceTablePage = ({ month }) => {
     return { hours, minutes };
   };
 
+  const calculateWorkHours = (start, end) => {
+    const startDate = new Date(`1970-01-01T${start}:00`);
+    const endDate = new Date(`1970-01-01T${end}:00`);
+    const diff = endDate - startDate;
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    return `${hours}時間 ${minutes}分`;
+  };
+
+  useEffect(() => {
+    if (startTime && endTime) {
+      const calculatedWorkHours = calculateWorkHours(startTime, endTime);
+      setWorkHours(calculatedWorkHours);
+    }
+  }, [startTime, endTime]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const accounts_id = localStorage.getItem('user');
+    const data = {
+      accounts_id,
+      start_time: startTime,
+      end_time: endTime,
+      break_time: breakTime,
+      work_hours: workHours
+    };
+
+    try {
+      const response = await fetch('http://localhost:3000/overtime', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      if (response.ok) {
+        alert('データが保存されました');
+      } else {
+        alert('データの保存に失敗しました');
+      }
+    } catch (error) {
+      console.error('Error saving data:', error);
+      alert('データの保存に失敗しました');
+    }
+  };
+
   return (
     <div id='table_flex'>
       <div id='table_box1'>
-      {userData && <p id='atUser'>ユーザー名: {userData.fullname} さん</p>}
+        {userData && <p id='atUser'>ユーザー名: {userData.fullname} さん</p>}
       </div>
-      <div id='table_box2' >
+      <div id='table_box2'>
         <h1 id='atH1'>勤怠一覧</h1>
         <h2>{month}月</h2>
+        <form onSubmit={handleSubmit}>
+          <label>
+            出勤開始時間:
+            <input type='time' value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+          </label>
+          <label>
+            退勤時間:
+            <input type='time' value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+          </label>
+          <label>
+            休憩時間:
+            <input type='time' value={breakTime} onChange={(e) => setBreakTime(e.target.value)} />
+          </label>
+          <label>
+            勤務時間:
+            <input type='text' value={workHours} readOnly />
+          </label>
+          <button type='submit'>保存</button>
+        </form>
         <div id='atTable'>
           <table className='atTop'>
             <thead className='atTh'>
@@ -123,6 +208,13 @@ const AttendanceTablePage = ({ month }) => {
               })}
             </tbody>
           </table>
+        </div>
+        <div id='overData'>
+          <h2>Overtime Data</h2>
+          <p>{overData.start_time}</p>
+          <p>{overData.end_time}</p>
+          <p>{overData.break_time}</p>
+          <p>{overData.work_hours}</p>
         </div>
       </div>
     </div>
