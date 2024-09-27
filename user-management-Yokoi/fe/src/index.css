@@ -140,34 +140,6 @@ html {
   margin-left: 25px;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  white-space: nowrap;
-  table-layout: fixed;
-}
-
-th:first-child {
-  width: 60px;
-}
-
-tr:nth-of-type(odd) {
-  background: #00dee0;
-}
-
-th {
-  background: #005454;
-  color: white;
-  font-weight: bold;
-}
-
-td,
-th {
-  padding: 5px;
-  border: 1px solid #00c2c2;
-  text-align: left;
-}
-
 /* アカウント登録後ページ */
 #account_after_text {
   margin-top: 30px;
@@ -311,4 +283,63 @@ th {
   font-family: "Yu Gothic Medium","遊ゴシック Medium",YuGothic,"遊ゴシック体","ヒラギノ角ゴ Pro W3",sans-serif;
   background-color: #eeeeee;
   color: #808080;
+  display: flex;
 }
+
+#table_box1 {
+  width: 20%;
+}
+
+#atUser {
+  margin-top: 100px;
+  margin-left: 60px;
+}
+
+#atH1 {
+  margin-top: 100px;
+}
+
+#table_box2 {
+  width: 80%;
+  text-align: center;
+}
+
+#atTable {
+  width: 100%;
+  margin: auto;
+}
+
+.atTh {
+  background-color: #266ebd;
+  color: white;
+}
+
+.atTop {
+  width: 80%;
+  border-collapse: collapse;
+  white-space: nowrap;
+  table-layout: fixed;
+  margin: auto;
+  border: 1px solid #266ebd;
+}
+
+/* th:first-child {
+  width: 60px;
+}
+
+tr:nth-of-type(odd) {
+  background: #00dee0;
+}
+
+th {
+  background: #005454;
+  color: white;
+  font-weight: bold;
+}
+
+td,
+th {
+  padding: 5px;
+  border: 1px solid #00c2c2;
+  text-align: left;
+} */

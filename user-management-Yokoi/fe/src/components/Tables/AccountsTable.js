@@ -51,7 +51,7 @@ class AccountsTable extends Component {
     }
 
     return (
-      <Table responsive hover>
+      <table responsive hover>
         <thead>
           <tr>
             <th>ID</th>
@@ -65,7 +65,7 @@ class AccountsTable extends Component {
         <tbody>
           {items}
         </tbody>
-      </Table>
+      </table>
     )
   }
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+//import { Table, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 const AttendanceTablePage = ({ month }) => {
@@ -78,49 +79,51 @@ const AttendanceTablePage = ({ month }) => {
   return (
     <div id='table_flex'>
       <div id='table_box1'>
-      {userData && <p>ユーザー名: {userData.fullname} さん</p>}
+      {userData && <p id='atUser'>ユーザー名: {userData.fullname} さん</p>}
       </div>
       <div id='table_box2' >
-        <h1>勤怠一覧</h1>
+        <h1 id='atH1'>勤怠一覧</h1>
         <h2>{month}月</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>日付</th>
-              <th>曜日</th>
-              <th>出勤時間</th>
-              <th>特記</th>
-              <th>出勤備考</th>
-              <th>退勤時間</th>
-              <th>特記</th>
-              <th>退勤備考</th>
-              <th>勤務時間</th>
-            </tr>
-          </thead>
-          <tbody>
-            {daysInMonth.map((date) => {
-              const record = findAttendanceRecord(date);
-              let workHoursDisplay = '-';
-              if (record && record.work_hours) {
-                const { hours, minutes } = extractWorkHours(record.work_hours);
-                workHoursDisplay = `${hours}時間 ${minutes}分`;
-              }
-              return (
-                <tr key={date.toISOString()}>
-                  <td>{date.toISOString().split('T')[0]}</td>
-                  <td>{getDayOfWeek(date)}</td>
-                  <td>{record ? record.check_in_time : '-'}</td>
-                  <td>{record ? record.remarks1 : '-'}</td>
-                  <td>{record ? record.remarks2 : '-'}</td>
-                  <td>{record ? record.check_out_time : '-'}</td>
-                  <td>{record ? record.out_remarks1 : '-'}</td>
-                  <td>{record ? record.out_remarks2 : '-'}</td>
-                  <td>{workHoursDisplay}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div id='atTable'>
+          <table className='atTop'>
+            <thead className='atTh'>
+              <tr>
+                <th>日付</th>
+                <th>曜日</th>
+                <th>出勤時間</th>
+                <th>特記</th>
+                <th>出勤備考</th>
+                <th>退勤時間</th>
+                <th>特記</th>
+                <th>退勤備考</th>
+                <th>勤務時間</th>
+              </tr>
+            </thead>
+            <tbody>
+              {daysInMonth.map((date) => {
+                const record = findAttendanceRecord(date);
+                let workHoursDisplay = '-';
+                if (record && record.work_hours) {
+                  const { hours, minutes } = extractWorkHours(record.work_hours);
+                  workHoursDisplay = `${hours}時間 ${minutes}分`;
+                }
+                return (
+                  <tr key={date.toISOString()}>
+                    <td>{date.toISOString().split('T')[0]}</td>
+                    <td>{getDayOfWeek(date)}</td>
+                    <td>{record ? record.check_in_time : '-'}</td>
+                    <td>{record ? record.remarks1 : '-'}</td>
+                    <td>{record ? record.remarks2 : '-'}</td>
+                    <td>{record ? record.check_out_time : '-'}</td>
+                    <td>{record ? record.out_remarks1 : '-'}</td>
+                    <td>{record ? record.out_remarks2 : '-'}</td>
+                    <td>{workHoursDisplay}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
