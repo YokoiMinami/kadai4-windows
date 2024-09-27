@@ -6,6 +6,9 @@ const AttendanceTablePage = ({ month }) => {
   //ユーザー情報
   const id = localStorage.getItem('user');
   const [userData, setUserData] = useState(null);
+  
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [daysInMonth, setDaysInMonth] = useState([]);
 
   useEffect(() => {
     fetch(`http://localhost:3000/user/${id}`, {
@@ -18,10 +21,6 @@ const AttendanceTablePage = ({ month }) => {
       .then(data => setUserData(data))
       .catch(err => console.log(err));
   }, [id]);
-
-
-  const [attendanceData, setAttendanceData] = useState([]);
-  const [daysInMonth, setDaysInMonth] = useState([]);
 
   useEffect(() => {
     const fetchAttendance = async () => {
@@ -69,6 +68,7 @@ const AttendanceTablePage = ({ month }) => {
   return (
     <div id='table_flex'>
       <div id='table_box1'>
+      {userData && <p>ユーザー名: {userData.fullname} さん</p>}
       </div>
       <div id='table_box2' >
         <h1>勤怠一覧</h1>

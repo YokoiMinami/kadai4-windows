@@ -102,9 +102,12 @@ const TopPageCopy = () => {
     
     // 勤務時間を計算
     const calculateWorkHours = (checkInTime, currentTime) => {
-      // const checkInTime = new Date(`1970-01-01T${checkIn}:00`);
+      //const checkInTime = new Date(`1970-01-01T${checkIn}:00`);
       //const checkOutTime = new Date(`1970-01-01T${checkOut}:00`);
-      if (isNaN(checkInTime) || isNaN(currentTime)) {
+      console.log(currentTime);
+      console.log(currentTime);
+      const isValidDate = (date) => date instanceof Date && !isNaN(date);
+      if (!isValidDate(checkInTime) || !isValidDate(currentTime)) {
         return '0 hours 0 minutes';
       }
       const diff = currentTime - checkInTime;
