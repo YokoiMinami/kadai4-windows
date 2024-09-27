@@ -65,6 +65,16 @@ const AttendanceTablePage = ({ month }) => {
     });
   };
 
+  const extractWorkHours = (workHoursString) => {
+    const hoursMatch = workHoursString.match(/(\d+) hours/);
+    const minutesMatch = workHoursString.match(/(\d+) minutes/);
+
+    const hours = hoursMatch ? parseInt(hoursMatch[1], 10) : 0;
+    const minutes = minutesMatch ? parseInt(minutesMatch[1], 10) : 0;
+
+    return { hours, minutes };
+  };
+
   return (
     <div id='table_flex'>
       <div id='table_box1'>
@@ -90,6 +100,11 @@ const AttendanceTablePage = ({ month }) => {
           <tbody>
             {daysInMonth.map((date) => {
               const record = findAttendanceRecord(date);
+              let workHoursDisplay = '-';
+              if (record && record.work_hours) {
+                const { hours, minutes } = extractWorkHours(record.work_hours);
+                workHoursDisplay = `${hours}時間 ${minutes}分`;
+              }
               return (
                 <tr key={date.toISOString()}>
                   <td>{date.toISOString().split('T')[0]}</td>
@@ -100,7 +115,7 @@ const AttendanceTablePage = ({ month }) => {
                   <td>{record ? record.check_out_time : '-'}</td>
                   <td>{record ? record.out_remarks1 : '-'}</td>
                   <td>{record ? record.out_remarks2 : '-'}</td>
-                  <td>{record && record.work_hours ? `${record.work_hours.hours}時間 ${record.work_hours.minutes}分` : '-'}</td>
+                  <td>{workHoursDisplay}</td>
                 </tr>
               );
             })}
