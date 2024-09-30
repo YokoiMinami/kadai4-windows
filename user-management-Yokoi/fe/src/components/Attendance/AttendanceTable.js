@@ -42,7 +42,7 @@ const AttendanceTablePage = ( ) => {
       }
     };
     fetchAttendance();
-  }, [month]);
+  }, [year,month]);
 
 
   //特定の月の日付を取得し、それをReactの状態に設定する
@@ -63,13 +63,13 @@ const AttendanceTablePage = ( ) => {
       return days; //すべての日付を含む配列を返す
     };
 
-    //現在の年を取得
-    const currentYear = new Date().getFullYear();
+    // //現在の年を取得
+    // const currentYear = new Date().getFullYear();
     //getDaysInMonth関数を使用して、現在の年と指定された月のすべての日付を取得します。JavaScriptの月は0から始まるため、month - 1
-    const days = getDaysInMonth(currentYear, month - 1);
+    const days = getDaysInMonth(year, month - 1);
     //取得した日付の配列をReactの状態に設定
     setDaysInMonth(days);
-  }, [month]); //monthが変更されるたびに実行する
+  }, [year,month]); //monthが変更されるたびに実行する
 
   //特定の日付の曜日を取得する関数
   const getDayOfWeek = (date) => {
