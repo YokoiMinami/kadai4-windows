@@ -14,7 +14,8 @@ import NewAccountPage from './components/NewAccount/NewAccountPage';
 import NewAccountAfter from './components/NewAccount/NewAccountAfter';
 
 const AppContent = () => {
-  const [month, setMonth] = useState(new Date().getMonth() + 1);
+  // const [year, setYear] = useState(new Date().getFullYear());
+  // const [month, setMonth] = useState(new Date().getMonth() + 1);
   const location = useLocation();
 
   return (
@@ -27,19 +28,10 @@ const AppContent = () => {
         <Route path="/top" element={<TopPageCopy />} />
         <Route path="/equipment" element={<EquipmentPage />} />
         <Route path="/attendance" element={<AttendancePage />} />
-        <Route path="/attendance_table" element={<AttendanceTablePage month={month} />} />
+        <Route path="/attendance_table" element={<AttendanceTablePage />} />
         <Route path="/new_account" element={<NewAccountPage />} />
         <Route path="/new_account_after/:id" element={<NewAccountAfter />} />
       </Routes>
-      {location.pathname === '/attendance_table' && (
-        <input
-          type="number"
-          value={month}
-          onChange={(e) => setMonth(e.target.value)}
-          min="1"
-          max="12"
-        />
-      )}
     </>
   );
 };

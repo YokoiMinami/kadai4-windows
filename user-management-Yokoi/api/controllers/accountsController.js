@@ -120,7 +120,7 @@ const delData = (req, res, db) => {
 
 
 const attData = async (req, res, db) => {
-  const { accounts_id, date, check_in_time, check_out_time, work_hours, remarks1, remarks2, out_remarks1, out_remarks2 } = req.body;
+  const { accounts_id, date, check_in_time, check_out_time, break_time, work_hours, remarks1, remarks2, out_remarks1, out_remarks2 } = req.body;
 
   try {
     const userAttendance = await db('attendance').where({ accounts_id, date }).first();
@@ -132,6 +132,7 @@ const attData = async (req, res, db) => {
           .where({ accounts_id, date })
           .update({
             check_out_time,
+            break_time,
             work_hours,
             out_remarks1,
             out_remarks2,

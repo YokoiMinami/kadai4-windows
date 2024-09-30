@@ -16,6 +16,7 @@ const TopPageCopy = () => {
   const [out_remarks1, setOutRemarks1] = useState('');
   const [out_remarks2, setOutRemarks2] = useState('');
   const [isCheckedIn, setIsCheckedIn] = useState(false); // 出勤状態を管理するフラグ
+  const [break_time, setBreakTime] = useState('01:00');
 
   useEffect(() => {
     fetch(`http://localhost:3000/user/${id}`, {
@@ -50,7 +51,7 @@ const TopPageCopy = () => {
     const accounts_id = localStorage.getItem('user');
     const now = new Date();
     const currentDate = now.toISOString().split('T')[0];
-    const currentTime = now.toTimeString().split(' ')[0];
+    const currentTime = now.toTimeString().split(' ')[0].slice(0, 5);
 
     const requestBody = {
       accounts_id,
@@ -79,7 +80,7 @@ const TopPageCopy = () => {
     const accounts_id = localStorage.getItem('user');
     const now = new Date();
     const currentDate = now.toISOString().split('T')[0];
-    const currentTime = now.toTimeString().split(' ')[0];
+    const currentTime = now.toTimeString().split(' ')[0].slice(0, 5);
     const date = now.toISOString().split('T')[0];
   
     // 出勤時刻を取得するためのAPI呼び出し
@@ -101,33 +102,56 @@ const TopPageCopy = () => {
     }
   
     // 勤務時間を計算
-    const calculateWorkHours = (checkInTimeString, checkOutTimeString) => {
+    const calculateWorkHours = (checkInTimeString, checkOutTimeString ) => {
       // 時間文字列をDateオブジェクトに変換
       const checkInTime = new Date(`1970-01-01T${checkInTimeString}`);
       const checkOutTime = new Date(`1970-01-01T${checkOutTimeString}`);
-      console.log(checkInTime); // 1970-01-01T13:16:06.000Z
-      console.log(checkOutTime); // 1970-01-01T14:27:31.000Z
-  
+      
       // 日付の有効性をチェック
       const isValidDate = (date) => date instanceof Date && !isNaN(date);
       if (!isValidDate(checkInTime) || !isValidDate(checkOutTime)) {
-        return '0 hours 0 minutes';
+        //テスト用
+
+        return '計算できませんでした';
       }
   
       // 時間の差を計算
       const diff = checkOutTime - checkInTime;
       console.log(diff);
-      const hours = Math.floor(diff / 1000 / 60 / 60);
-      const minutes = Math.floor((diff / 1000 / 60) % 60);
-      return `${hours} hours ${minutes} minutes`;
+      const hours = Math.floor(diff / 1000 / 60 / 60).toString().padStart(2, '0');
+      const minutes = Math.floor((diff / 1000 / 60) % 60).toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    };
+
+    const work_hours = calculateWorkHours(checkinTime, currentTime);
+
+    // 勤務時間を計算
+    const CalculateWorkHours = (checkOllTimeString, checkBreakTimeString ) => {
+      // 時間文字列をDateオブジェクトに変換
+      const checkOllTime = new Date(`1970-01-01T${checkOllTimeString}`);
+      const checkBreakTime = new Date(`1970-01-01T${checkBreakTimeString}`);
+      
+      // 日付の有効性をチェック
+      const isValidDate = (date) => date instanceof Date && !isNaN(date);
+      if (!isValidDate(checkOllTime) || !isValidDate(checkBreakTime)) {
+        return '計算できませんでした';
+      }
+  
+      // 時間の差を計算
+      const diff =  checkOllTime - checkBreakTime;
+      console.log(diff);
+      const hours = Math.floor(diff / 1000 / 60 / 60).toString().padStart(2, '0');;
+      const minutes = Math.floor((diff / 1000 / 60) % 60).toString().padStart(2, '0');;
+      return `${hours}:${minutes}`;
     };
   
-    const workHours = calculateWorkHours(checkinTime, currentTime);
-  
+    const workHours = CalculateWorkHours(work_hours, break_time);
+
     const requestBody = {
       accounts_id,
       date: currentDate,
       check_out_time: currentTime,
+      break_time: break_time,
       work_hours: workHours,
       out_remarks1: out_remarks1,
       out_remarks2: out_remarks2
@@ -167,6 +191,8 @@ const TopPageCopy = () => {
         </div>
           {!isCheckedIn ? (
             <>
+            <div id='topbreak'>
+            </div>
               <div className='top_drop_flex' id='toppull'>
                 <div id='top_drop_text'>
                   特記 : 
@@ -191,6 +217,10 @@ const TopPageCopy = () => {
             </>
           ) : (
             <>
+            <div id='topbreak'>
+                <label>休憩時間 : </label>
+                <input type='time' id='break_input' value={break_time} onChange={(e) => setBreakTime(e.target.value)} />
+            </div>
             <div className='top_drop_flex'id='toppull'>
               <div id='top_drop_text'>
                 特記 : 
