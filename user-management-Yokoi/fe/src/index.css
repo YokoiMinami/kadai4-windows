@@ -411,13 +411,11 @@ html {
   border: 1px solid #266ebd;
   word-wrap: break-word; /* 行を折り返す */
   white-space: normal; /* 通常の空白処理 */
-  /* text-align: left; */
 }
 
 #at_tbody th {
   padding: 5px;
   border: 1px solid #266ebd;
-  /* text-align: left; */
 }
 
 
@@ -438,7 +436,8 @@ html {
 }
 
 .remarks2-column {
-  width: 300px; /* 特記列の幅 */
+  width: 300px; 
+  text-align: left; /* 備考列の幅 */
 }
 
 

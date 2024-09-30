@@ -95,6 +95,12 @@ const AttendanceTablePage = ( ) => {
     return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
   };
 
+  // 「。」を改行タグに置き換える関数
+  const formatRemarks = (remarks) => {
+    if (!remarks) return '-';
+    return remarks.split('。').join('。<br />');
+  };
+
   //通常勤怠情報の処理
     //ユーザーIDをもとに残業情報を取得、データがあればインプットにデフォルト表示
   useEffect(() => {
@@ -262,10 +268,11 @@ const AttendanceTablePage = ( ) => {
                     <td>{getDayOfWeek(date)}</td>
                     <td>{record ? formatTime(record.check_in_time) : '-'}</td>
                     <td>{record ? record.remarks1 : '-'}</td>
-                    <td>{record ? record.remarks2 : '-'}</td>
+                    {/* <td>{record ? record.remarks2 : '-'}</td> */}
+                    <td className='remarks2-column' dangerouslySetInnerHTML={{ __html: record ? formatRemarks(record.remarks2) : '-' }}></td>
                     <td>{record ? formatTime(record.check_out_time) : '-'}</td>
                     <td>{record ? record.out_remarks1 : '-'}</td>
-                    <td>{record ? record.out_remarks2 : '-'}</td>
+                    <td className='remarks2-column' dangerouslySetInnerHTML={{ __html: record ? formatRemarks(record.out_remarks2) : '-' }}></td>
                     <td>{record ? formatTime(record.break_time) : '-'}</td>
                     <td>{record ? formatTime(record.work_hours) : '-'}</td>
                   </tr>
