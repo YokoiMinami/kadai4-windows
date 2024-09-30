@@ -241,16 +241,16 @@ const AttendanceTablePage = ( ) => {
           <table className='atTop'>
             <thead className='atTh'>
               <tr>
-                <th>日付</th>
-                <th>曜日</th>
-                <th>出勤時間</th>
-                <th>特記</th>
-                <th>出勤備考</th>
-                <th>退勤時間</th>
-                <th>特記</th>
-                <th>退勤備考</th>
-                <th>休憩時間</th>
-                <th>勤務時間</th>
+                <th className='date-column'>日付</th>
+                <th className='day-column'>曜日</th>
+                <th className='time-column'>出勤時間</th>
+                <th className='remarks-column'>特記</th>
+                <th className='remarks2-column'>出勤備考</th>
+                <th className='time-column'>退勤時間</th>
+                <th className='remarks-column'>特記</th>
+                <th className='remarks2-column'>退勤備考</th>
+                <th className='time-column'>休憩時間</th>
+                <th className='time-column'>勤務時間</th>
               </tr>
             </thead>
             <tbody id='at_tbody'>

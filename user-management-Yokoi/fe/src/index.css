@@ -406,11 +406,41 @@ html {
   background-color: white;
 }
 
-td,th {
+#at_tbody td {
+  padding: 5px;
+  border: 1px solid #266ebd;
+  word-wrap: break-word; /* 行を折り返す */
+  white-space: normal; /* 通常の空白処理 */
+  /* text-align: left; */
+}
+
+#at_tbody th {
   padding: 5px;
   border: 1px solid #266ebd;
   /* text-align: left; */
 }
+
+
+.date-column {
+  width: 100px; /* 日付列の幅 */
+}
+
+.day-column {
+  width: 60px; /* 曜日列の幅 */
+}
+
+.time-column {
+  width: 70px; /* 時間列の幅 */
+}
+
+.remarks-column {
+  width: 50px; /* 特記列の幅 */
+}
+
+.remarks2-column {
+  width: 300px; /* 特記列の幅 */
+}
+
 
 /* th:first-child {
   width: 60px;
