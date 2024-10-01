@@ -17,7 +17,8 @@ const AttendanceTablePage = ( ) => {
   const [holidaysAndWeekendsCount, setHolidaysAndWeekendsCount] = useState(0);
   const [provisions, setProvisions] = useState(0);
   const [userWorkHours, setUserWorkHours] = useState(0);
-  const selectedKeys = ['work_hours'];
+  const [remainingTime, setRemainingTime] = useState('');
+
 
   //ユーザー情報を取得
   useEffect(() => {
@@ -54,7 +55,7 @@ const AttendanceTablePage = ( ) => {
     const day = date.getUTCDay();
     return day === 0 || day === 6; // 日曜日 (0) または土曜日 (6)
   };
-  
+
   //祝日を取得
   const getHolidaysInMonth = (year, month) => {
     const holidays = holidayJp.between(new Date(year, month - 1, 1), new Date(year, month, 0));
@@ -83,7 +84,10 @@ const AttendanceTablePage = ( ) => {
     const days = getDaysInMonth(year, month - 1);
     const weekends = days.filter(isWeekend);
     const holidays = getHolidaysInMonth(year, month);
-    const holidaysAndWeekends = [...weekends, ...holidays].sort((a, b) => a - b);
+
+    // 祝日が土日に含まれる場合、その日数を除外
+    const uniqueHolidays = holidays.filter(holiday => !weekends.some(weekend => weekend.getTime() === holiday.getTime()));
+    const holidaysAndWeekends = [...weekends, ...uniqueHolidays].sort((a, b) => a - b);
 
     // 全ての日数から土日祝日を引いた数をコンソールに表示
     const workingDaysCount = days.length - holidaysAndWeekends.length;
@@ -92,6 +96,7 @@ const AttendanceTablePage = ( ) => {
     setHolidaysAndWeekendsCount(workingDaysCount);
     // 土日祝日の日数をコンソールログに表示
 
+    console.log(`土日祝日の日数: ${holidaysAndWeekends.length}`);
     console.log(`土日祝日を引いた日数: ${workingDaysCount}`);
     //取得した日付の配列をReactの状態に設定
     setDaysInMonth(days);
@@ -200,14 +205,21 @@ const AttendanceTablePage = ( ) => {
     const diffMinutes = minutes1 - minutes2;
     return convertMinutesToTime(diffMinutes);
   };
-  // //ユーザーの一か月の総勤務時間
-  // useEffect(() => {
-  //   if (userWorkHours.length > 0) {
-  //     const all_work = userWorkHours.map(record => record.work_hours);
-  //     console.log(all_work);
-  //   }
-  // }, [userWorkHours]);  
 
+  //残りの時間がマイナスかどうかを判定
+  const isNegativeTime = (timeString) => {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    return hours < 0 || (hours === 0 && minutes < 0);
+  };
+
+  //時間からマイナスを消す
+  const removeNegativeSign = (timeString) => {
+    if (timeString.startsWith('-')) {
+      return timeString.slice(1);
+    }
+    return timeString;
+  };
+  
   useEffect(() => {
     if (startTime && endTime && breakTime) {
       const WorkHours = CalculateWorkHours2(work_hours, breakTime);
@@ -238,6 +250,7 @@ const AttendanceTablePage = ( ) => {
       const totalWorkHoursTime = convertMinutesToTime(totalWorkHours);
 
       const remainingTime = subtractTimes(multipliedWorkHours, totalWorkHoursTime);
+      setRemainingTime(remainingTime);
       console.log(`残りの時間: ${remainingTime}`);
     }
     }
@@ -310,21 +323,37 @@ const AttendanceTablePage = ( ) => {
       </div>
       <div id='table_box2'>
         <h1 id='atH1'>勤怠一覧</h1>
-        <div id='at_ym'>
-          <input
-            id='at_year'
-            type="number"
-            value={year}
-            onChange={(e) => setYear(e.target.value)}
-          />
-          <input
-            id='at_month'
-            type="number"
-            value={month}
-            onChange={(e) => setMonth(e.target.value)}
-            min="1"
-            max="12"
-          />
+        <div id='table_top_menu'>
+          <div id='all_overwork'>
+            <p>
+              <span className="label">今月の規定勤務時間 :</span>
+              <span className="value">{provisions}</span>
+            </p>
+            <p>
+              <span className="label">今月の残り規定勤務時間 :</span>
+              <span className="value">{isNegativeTime(remainingTime) ? '0' : remainingTime}</span>
+            </p>
+            <p>
+              <span className="label">今月の総残業時間 :</span>
+              <span className="value">{isNegativeTime(remainingTime) ? removeNegativeSign(remainingTime) : '0'}</span>
+            </p>
+          </div>
+          <div id='at_ym'>
+            <input
+              id='at_year'
+              type="number"
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+            />
+            <input
+              id='at_month'
+              type="number"
+              value={month}
+              onChange={(e) => setMonth(e.target.value)}
+              min="1"
+              max="12"
+            />
+          </div>
         </div>
         <h2>{year}年 {month}月</h2>
         <div id='atTable'>

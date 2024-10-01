@@ -361,10 +361,34 @@ html {
   text-align: center;
 }
 
-#at_ym {
+#table_top_menu {
+  display: flex;
+  justify-content: space-between;
   width: 80%;
   margin: auto;
+}
+
+#all_overwork {
+  display: table;
+  width: 50%;
+}
+
+#all_overwork p {
+  display: table-row;
+}
+
+.label, .value {
+  display: table-cell;
+}
+
+.value {
+  text-align: left;
+}
+
+
+#at_ym {
   text-align: right;
+  width: 50%;
 }
 
 #at_year {
@@ -442,6 +466,7 @@ html {
 #remarks2-td {
   text-align: left;
 }
+
 
 
 
