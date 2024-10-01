@@ -377,14 +377,17 @@ html {
   display: table-row;
 }
 
-.label, .value {
+.label, .value,.overtime {
   display: table-cell;
 }
 
-.value {
+.value,.overtime {
   text-align: left;
 }
 
+.overtime {
+  color: crimson;
+}
 
 #at_ym {
   text-align: right;

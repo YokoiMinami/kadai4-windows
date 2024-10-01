@@ -18,7 +18,9 @@ const AttendanceTablePage = ( ) => {
   const [provisions, setProvisions] = useState(0);
   const [userWorkHours, setUserWorkHours] = useState(0);
   const [remainingTime, setRemainingTime] = useState('');
-
+  const [userTotal, setUserTotal] = useState(0);
+  const [isOvertime, setIsOvertime] = useState(false);
+  const [isOvertimeData, setIsOvertimeData] = useState(0);
 
   //ユーザー情報を取得
   useEffect(() => {
@@ -33,7 +35,7 @@ const AttendanceTablePage = ( ) => {
       .catch(err => console.log(err));
   }, [id]);
 
-  //勤怠情報を取得
+  //ユーザーの勤怠情報を取得
   useEffect(() => {
     const fetchAttendance = async () => {
       const accounts_id = localStorage.getItem('user');
@@ -62,6 +64,7 @@ const AttendanceTablePage = ( ) => {
     return holidays.map(holiday => new Date(holiday.date));
   };
 
+  //表を出力
   //特定の月の日付を取得し、それをReactの状態に設定する
   useEffect(() => {
     //指定された年と月のすべての日付を配列として返す
@@ -94,10 +97,7 @@ const AttendanceTablePage = ( ) => {
 
     // 土日祝日を引いた日数を状態に設定
     setHolidaysAndWeekendsCount(workingDaysCount);
-    // 土日祝日の日数をコンソールログに表示
 
-    console.log(`土日祝日の日数: ${holidaysAndWeekends.length}`);
-    console.log(`土日祝日を引いた日数: ${workingDaysCount}`);
     //取得した日付の配列をReactの状態に設定
     setDaysInMonth(days);
   }, [year,month]); //monthが変更されるたびに実行する
@@ -136,7 +136,7 @@ const AttendanceTablePage = ( ) => {
   };
 
   //通常勤怠情報の処理
-    //ユーザーIDをもとに残業情報を取得、データがあればインプットにデフォルト表示
+  //ユーザーIDをもとに残業情報を取得、データがあればインプットにデフォルト表示
   useEffect(() => {
     const accounts_id = localStorage.getItem('user');
     fetch(`http://localhost:3000/overuser/${accounts_id}`, {
@@ -151,7 +151,6 @@ const AttendanceTablePage = ( ) => {
         if (data.start_time) setStartTime(data.start_time);
         if (data.end_time) setEndTime(data.end_time);
         if (data.break_time) setBreakTime(data.break_time);
-        // if (data.work_hours) setWorkHours(data.work_hours);
       })
       .catch(err => console.log(err));
   }, [id]);
@@ -237,24 +236,43 @@ const AttendanceTablePage = ( ) => {
       
       //一か月の規定勤務時間
       setProvisions(multipliedWorkHours);
-      // コンソールに表示
-      console.log(`掛ける勤務日数をした時間: ${multipliedWorkHours}`);
 
-       // ユーザーの一か月の総勤務時間を引く
-    if (userWorkHours.length > 0) {
-      const allWorkHours = userWorkHours.map(record => record.work_hours);
-      const totalWorkHours = allWorkHours.reduce((acc, curr) => {
-        const totalMinutes = acc + convertTimeToMinutes(curr);
-        return totalMinutes;
-      }, 0);
-      const totalWorkHoursTime = convertMinutesToTime(totalWorkHours);
+      // ユーザーの一か月の総勤務時間を引く
+      if (userWorkHours.length > 0) {
+        const allWorkHours = userWorkHours.map(record => record.work_hours);
+        const totalWorkHours = allWorkHours.reduce((acc, curr) => {
+          const totalMinutes = acc + convertTimeToMinutes(curr);
+          return totalMinutes;
+        }, 0);
 
-      const remainingTime = subtractTimes(multipliedWorkHours, totalWorkHoursTime);
-      setRemainingTime(remainingTime);
-      console.log(`残りの時間: ${remainingTime}`);
+        const totalWorkHoursTime = convertMinutesToTime(totalWorkHours);
+        setUserTotal(totalWorkHoursTime);
+        const remainingTime1 = subtractTimes(multipliedWorkHours, totalWorkHoursTime);
+        setRemainingTime(remainingTime1);
+      }
     }
+  }, [startTime, endTime, breakTime, workHours, userWorkHours, remainingTime, month, year]);
+
+  const truncateMinutes = (timeString) => {
+    const [hours, minutes] = timeString.split(':');
+    return `${hours}`;
+  };
+
+  useEffect(() => {
+
+    const minus = isNegativeTime(remainingTime);
+    if(minus){
+      const remove = removeNegativeSign(remainingTime);
+      const removeH = truncateMinutes(remove);
+      console.log(removeH);
+      // 残業時間が35時間を超えるかどうかをチェック
+      if (removeH > 35) {
+        setIsOvertime(true);
+      } 
+    }else {
+      setIsOvertime(false);
     }
-  }, [startTime, endTime, breakTime, workHours, userWorkHours]);
+  },[remainingTime])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -326,6 +344,10 @@ const AttendanceTablePage = ( ) => {
         <div id='table_top_menu'>
           <div id='all_overwork'>
             <p>
+              <span className="label">今月の総勤務時間 :</span>
+              <span className="value">{userTotal}</span>
+            </p>
+            <p>
               <span className="label">今月の規定勤務時間 :</span>
               <span className="value">{provisions}</span>
             </p>
@@ -335,7 +357,9 @@ const AttendanceTablePage = ( ) => {
             </p>
             <p>
               <span className="label">今月の総残業時間 :</span>
-              <span className="value">{isNegativeTime(remainingTime) ? removeNegativeSign(remainingTime) : '0'}</span>
+              <span className={`${isOvertime ? 'overtime' : 'value'}`}>
+                {isNegativeTime(remainingTime) ? removeNegativeSign(remainingTime) : '0'}
+              </span>
             </p>
           </div>
           <div id='at_ym'>
@@ -393,13 +417,6 @@ const AttendanceTablePage = ( ) => {
             </tbody>
           </table>
         </div>
-        {/* <div id='overData'>
-          <h2>Overtime Data</h2>
-          <p>{overData.start_time}</p>
-          <p>{overData.end_time}</p>
-          <p>{overData.break_time}</p>
-          <p>{overData.work_hours}</p>
-        </div> */}
       </div>
     </div>
   );
