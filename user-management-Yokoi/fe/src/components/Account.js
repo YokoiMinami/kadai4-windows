@@ -65,7 +65,7 @@ class Account extends Component {
               <AddEditModal buttonLabel="メンバー追加" addItemToState={this.addItemToState} />
               {this.state.items.length > 0 &&
                 <CSVLink
-                  className="btn btn-primary"
+                  className="custom-csv-link"
                   filename={"accounts.csv"}
                   data={this.state.items}>
                   CSVエクスポート

@@ -538,18 +538,6 @@ html {
   padding-right: 10%;
 }
 
-/* #account_delete_button {
-  background-color: #266ebd;
-  color: white;
-  width: 80px;
-  height: 30px;
-  border: 1px solid #266ebd;
-}
-
-#account_delete_button:hover {
-  background-color: #023e8a;
-} */
-
 #account_add_button{
   background-color: #266ebd;
   color: white;
@@ -564,6 +552,23 @@ html {
 #account_add_button:hover{
   background-color: #023e8a;
 } 
+
+.custom-csv-link {
+  background-color: #266ebd;
+  color: white;
+  font-size: large;
+  border-radius: 5px;
+  width: 200px;
+  height: 100px;
+  border: 6px outset #266ebd;
+  transition: 0.5s;
+  font-family: "Yu Gothic Medium","遊ゴシック Medium",YuGothic,"遊ゴシック体","ヒラギノ角ゴ Pro W3",sans-serif;
+  text-decoration: none;
+}
+
+.custom-csv-link:hover {
+  background-color: #023e8a;
+}
 
 /* th:first-child {
   width: 60px;
