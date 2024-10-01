@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import holidayJp from '@holiday-jp/holiday_jp';
 import { Link } from 'react-router-dom';
 
 const AttendanceTablePage = ( ) => {
@@ -13,6 +14,10 @@ const AttendanceTablePage = ( ) => {
   const [workHours, setWorkHours] = useState('08:00');
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth() + 1);
+  const [holidaysAndWeekendsCount, setHolidaysAndWeekendsCount] = useState(0);
+  const [provisions, setProvisions] = useState(0);
+  const [userWorkHours, setUserWorkHours] = useState(0);
+  const selectedKeys = ['work_hours'];
 
   //ユーザー情報を取得
   useEffect(() => {
@@ -34,6 +39,7 @@ const AttendanceTablePage = ( ) => {
       try {
         const response = await fetch(`http://localhost:3000/attendance/${accounts_id}/${month}`);
         const data = await response.json();
+        setUserWorkHours(data);
         setAttendanceData(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Error fetching attendance data:', error);
@@ -43,6 +49,17 @@ const AttendanceTablePage = ( ) => {
     fetchAttendance();
   }, [year,month]);
 
+  //土日を判定
+  const isWeekend = (date) => {
+    const day = date.getUTCDay();
+    return day === 0 || day === 6; // 日曜日 (0) または土曜日 (6)
+  };
+  
+  //祝日を取得
+  const getHolidaysInMonth = (year, month) => {
+    const holidays = holidayJp.between(new Date(year, month - 1, 1), new Date(year, month, 0));
+    return holidays.map(holiday => new Date(holiday.date));
+  };
 
   //特定の月の日付を取得し、それをReactの状態に設定する
   useEffect(() => {
@@ -64,6 +81,18 @@ const AttendanceTablePage = ( ) => {
 
     //getDaysInMonth関数を使用して、現在の年と指定された月のすべての日付を取得します。JavaScriptの月は0から始まるため、month - 1
     const days = getDaysInMonth(year, month - 1);
+    const weekends = days.filter(isWeekend);
+    const holidays = getHolidaysInMonth(year, month);
+    const holidaysAndWeekends = [...weekends, ...holidays].sort((a, b) => a - b);
+
+    // 全ての日数から土日祝日を引いた数をコンソールに表示
+    const workingDaysCount = days.length - holidaysAndWeekends.length;
+
+    // 土日祝日を引いた日数を状態に設定
+    setHolidaysAndWeekendsCount(workingDaysCount);
+    // 土日祝日の日数をコンソールログに表示
+
+    console.log(`土日祝日を引いた日数: ${workingDaysCount}`);
     //取得した日付の配列をReactの状態に設定
     setDaysInMonth(days);
   }, [year,month]); //monthが変更されるたびに実行する
@@ -117,7 +146,7 @@ const AttendanceTablePage = ( ) => {
         if (data.start_time) setStartTime(data.start_time);
         if (data.end_time) setEndTime(data.end_time);
         if (data.break_time) setBreakTime(data.break_time);
-        //if (data.work_hours) setWorkHours(data.work_hours);
+        // if (data.work_hours) setWorkHours(data.work_hours);
       })
       .catch(err => console.log(err));
   }, [id]);
@@ -152,12 +181,67 @@ const AttendanceTablePage = ( ) => {
     return `${hours}:${minutes}`;
   };
 
+  //残業時間を計算
+  //日数計算するために分単位に変換
+  const convertTimeToMinutes = (timeString) => {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    return hours * 60 + minutes;
+  };
+
+  const convertMinutesToTime = (minutes) => {
+    const hours = Math.floor(minutes / 60).toString().padStart(2, '0');
+    const mins = (minutes % 60).toString().padStart(2, '0');
+    return `${hours}:${mins}`;
+  };
+
+  const subtractTimes = (time1, time2) => {
+    const minutes1 = convertTimeToMinutes(time1);
+    const minutes2 = convertTimeToMinutes(time2);
+    const diffMinutes = minutes1 - minutes2;
+    return convertMinutesToTime(diffMinutes);
+  };
+  // //ユーザーの一か月の総勤務時間
+  // useEffect(() => {
+  //   if (userWorkHours.length > 0) {
+  //     const all_work = userWorkHours.map(record => record.work_hours);
+  //     console.log(all_work);
+  //   }
+  // }, [userWorkHours]);  
+
   useEffect(() => {
     if (startTime && endTime && breakTime) {
       const WorkHours = CalculateWorkHours2(work_hours, breakTime);
       setWorkHours(WorkHours);
+
+      // workHoursを分単位に変換し、勤務日数を掛ける
+      const holiday = holidaysAndWeekendsCount;
+      const workHoursInMinutes = convertTimeToMinutes(WorkHours);
+      const multipliedWorkHoursInMinutes = workHoursInMinutes * holiday;
+
+      // 分単位の時間をhh:mm形式に変換
+      const hours = Math.floor(multipliedWorkHoursInMinutes / 60).toString().padStart(2, '0');
+      const minutes = (multipliedWorkHoursInMinutes % 60).toString().padStart(2, '0');
+      const multipliedWorkHours = `${hours}:${minutes}`;
+      
+      //一か月の規定勤務時間
+      setProvisions(multipliedWorkHours);
+      // コンソールに表示
+      console.log(`掛ける勤務日数をした時間: ${multipliedWorkHours}`);
+
+       // ユーザーの一か月の総勤務時間を引く
+    if (userWorkHours.length > 0) {
+      const allWorkHours = userWorkHours.map(record => record.work_hours);
+      const totalWorkHours = allWorkHours.reduce((acc, curr) => {
+        const totalMinutes = acc + convertTimeToMinutes(curr);
+        return totalMinutes;
+      }, 0);
+      const totalWorkHoursTime = convertMinutesToTime(totalWorkHours);
+
+      const remainingTime = subtractTimes(multipliedWorkHours, totalWorkHoursTime);
+      console.log(`残りの時間: ${remainingTime}`);
     }
-  }, [startTime, endTime, breakTime]);
+    }
+  }, [startTime, endTime, breakTime, workHours, userWorkHours]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -188,8 +272,7 @@ const AttendanceTablePage = ( ) => {
       alert('データの保存に失敗しました');
     }
   };
-
-
+  
   return (
     <div id='table_flex'>
       <div id='table_box1'>

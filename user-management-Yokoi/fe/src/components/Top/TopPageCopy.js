@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react
 import TopButton from './TopButton';
 import OnesLogo from '../../images/ones-logo.png';
 import DigitalClock from './DigitalClock';
+//import TimePicker from 'react-time-picker';
 
 const TopPageCopy = () => {
 
@@ -16,7 +17,7 @@ const TopPageCopy = () => {
   const [out_remarks1, setOutRemarks1] = useState('');
   const [out_remarks2, setOutRemarks2] = useState('');
   const [isCheckedIn, setIsCheckedIn] = useState(false); // 出勤状態を管理するフラグ
-  const [break_time, setBreakTime] = useState('01:00');
+  const [break_time, setBreakTime] = useState('01:00');  
 
   useEffect(() => {
     fetch(`http://localhost:3000/user/${id}`, {
@@ -46,17 +47,30 @@ const TopPageCopy = () => {
   if (!userData) {
     return <div>Loading...</div>;
   }
+  //15分繰り上げる
+  const roundUpToQuarterHour = (timeString) => {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const roundedMinutes = Math.ceil(totalMinutes / 15) * 15;
+    const roundedHours = Math.floor(roundedMinutes / 60).toString().padStart(2, '0');
+    const roundedMins = (roundedMinutes % 60).toString().padStart(2, '0');
+    return `${roundedHours}:${roundedMins}`;
+  };  
 
+  //出勤処理
   const handleCheckIn = async () => {
     const accounts_id = localStorage.getItem('user');
     const now = new Date();
     const currentDate = now.toISOString().split('T')[0];
     const currentTime = now.toTimeString().split(' ')[0].slice(0, 5);
 
+    // 現在の時間を15分単位に繰り上げ
+    const roundedCheckInTime = roundUpToQuarterHour(currentTime);
+
     const requestBody = {
       accounts_id,
       date: currentDate,
-      check_in_time: currentTime,
+      check_in_time: roundedCheckInTime,
       remarks1,
       remarks2
     };
@@ -76,13 +90,27 @@ const TopPageCopy = () => {
     }
   };
 
+  //退勤時間を15分切り捨て
+  const roundDownToQuarterHour = (timeString) => {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const roundedMinutes = Math.floor(totalMinutes / 15) * 15;
+    const roundedHours = Math.floor(roundedMinutes / 60).toString().padStart(2, '0');
+    const roundedMins = (roundedMinutes % 60).toString().padStart(2, '0');
+    return `${roundedHours}:${roundedMins}`;
+  };  
+
+  //退勤処理
   const handleCheckOut = async () => {
     const accounts_id = localStorage.getItem('user');
     const now = new Date();
     const currentDate = now.toISOString().split('T')[0];
     const currentTime = now.toTimeString().split(' ')[0].slice(0, 5);
     const date = now.toISOString().split('T')[0];
-  
+
+    // 現在の時間を15分単位に切り捨て
+    const roundedCheckOutTime = roundDownToQuarterHour(currentTime);
+    
     // 出勤時刻を取得するためのAPI呼び出し
     let checkinTime;
     try {
@@ -101,7 +129,7 @@ const TopPageCopy = () => {
       return;
     }
   
-    // 勤務時間を計算
+    // 出勤から退勤を引いて全勤務時間を計算
     const calculateWorkHours = (checkInTimeString, checkOutTimeString ) => {
       // 時間文字列をDateオブジェクトに変換
       const checkInTime = new Date(`1970-01-01T${checkInTimeString}`);
@@ -123,9 +151,9 @@ const TopPageCopy = () => {
       return `${hours}:${minutes}`;
     };
 
-    const work_hours = calculateWorkHours(checkinTime, currentTime);
+    const work_hours = calculateWorkHours(checkinTime, roundedCheckOutTime);
 
-    // 勤務時間を計算
+    // 全勤務時間から休憩時間を引いて勤務時間を計算
     const CalculateWorkHours = (checkOllTimeString, checkBreakTimeString ) => {
       // 時間文字列をDateオブジェクトに変換
       const checkOllTime = new Date(`1970-01-01T${checkOllTimeString}`);
@@ -150,7 +178,7 @@ const TopPageCopy = () => {
     const requestBody = {
       accounts_id,
       date: currentDate,
-      check_out_time: currentTime,
+      check_out_time: roundedCheckOutTime,
       break_time: break_time,
       work_hours: workHours,
       out_remarks1: out_remarks1,
@@ -222,7 +250,7 @@ const TopPageCopy = () => {
         <div id='top_r_all'>
           <div id='topbreak'>
             <label>休憩時間 : </label>
-            <input type='time' id='break_input' value={break_time} onChange={(e) => setBreakTime(e.target.value)} />
+            <input type='time' step="900" id='break_input' value={break_time} onChange={(e) => setBreakTime(e.target.value)} />
           </div>
           <div id='top_drops'>
             <div id='top_drop_text'>
