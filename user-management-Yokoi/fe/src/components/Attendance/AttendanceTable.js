@@ -20,7 +20,6 @@ const AttendanceTablePage = ( ) => {
   const [remainingTime, setRemainingTime] = useState('');
   const [userTotal, setUserTotal] = useState(0);
   const [isOvertime, setIsOvertime] = useState(false);
-  const [isOvertimeData, setIsOvertimeData] = useState(0);
 
   //ユーザー情報を取得
   useEffect(() => {

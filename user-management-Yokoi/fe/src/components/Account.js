@@ -3,6 +3,7 @@ import { Container, Row, Col } from 'reactstrap';
 import { CSVLink } from "react-csv";
 import AccountsTable from './Tables/AccountsTable';
 import AddEditModal from './Modals/AddEditModal';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
 
@@ -47,32 +48,34 @@ class Account extends Component {
 
   render() {
     return (
-      <Container className="Acount">
-        <Row>
-          <Col>
-            <h1 style={{ margin: "13px" }}>User management app</h1>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <AccountsTable items={this.state.items} updateState={this.updateState} deleteItemFromState={this.deleteItemFromState} />
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <AddEditModal buttonLabel="追加" addItemToState={this.addItemToState} />
-            {this.state.items.length > 0 &&
-              <CSVLink
-                className="btn btn-primary"
-                filename={"accounts.csv"}
-                data={this.state.items}>
-                CSVエクスポート
-              </CSVLink>
-            }
-          </Col>
-        </Row>
-        <Link to="/top">Go back to Home Page</Link>
-      </Container>
+      <div id='accout_page'>
+        <Container>
+          <Row>
+            <Col>
+              <h1 id='account_h1'>メンバー管理</h1>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <AccountsTable items={this.state.items} updateState={this.updateState} deleteItemFromState={this.deleteItemFromState} />
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <AddEditModal buttonLabel="メンバー追加" addItemToState={this.addItemToState} />
+              {this.state.items.length > 0 &&
+                <CSVLink
+                  className="btn btn-primary"
+                  filename={"accounts.csv"}
+                  data={this.state.items}>
+                  CSVエクスポート
+                </CSVLink>
+              }
+            </Col>
+          </Row>
+          <Link to="/top">Go back to Home Page</Link>
+        </Container>
+      </div>
     );
   }
 }

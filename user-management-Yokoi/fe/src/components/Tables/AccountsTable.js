@@ -31,16 +31,18 @@ class AccountsTable extends Component {
       items = this.props.items.map(item => {
         return (
           <tr key={item.id}>
-            <th scope="row">{item.id}</th>
+            {/* <th scope="row">{item.id}</th> */}
+            <td>{item.id}</td>
             <td>{item.fullname}</td>
             <td>{item.email}</td>
             <td>{item.phone}</td>
-            <td>{item.password}</td>
-            <td>
-              <div style={{ margin: "auto" }}>
+            <td>****</td>
+            {/* <td>{item.password}</td> */}
+            <td className ='ac_6'>
+              <div id='account_button_area'>
                 <AddEditModal buttonLabel="編集" item={item} updateState={this.props.updateState} />
                 {' '}
-                <Button color="danger" onClick={() => this.deleteItem(item.id)}>削除</Button>
+                <Button id='account_delete_button' onClick={() => this.deleteItem(item.id)}>削除</Button>
               </div>
             </td>
           </tr>
@@ -51,15 +53,15 @@ class AccountsTable extends Component {
     }
 
     return (
-      <table responsive hover>
+      <table id='account_table' responsive hover>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>氏名</th>
-            <th>Email</th>
-            <th>電話番号</th>
-            <th>パスワード</th>
-            <th></th>
+            <th className ='ac_1'>ID</th>
+            <th className ='ac_2'>氏名</th>
+            <th className ='ac_3'>Email</th>
+            <th className ='ac_4'>電話番号</th>
+            <th className ='ac_5'>パスワード</th>
+            <th className ='ac_6'></th>
           </tr>
         </thead>
         <tbody>

@@ -23,17 +23,15 @@ class AddEditModal extends Component {
     let title = '';
 
     if (label === '編集') {
-      button = <Button
-        color="warning"
+      button = <Button id='account_edit_button'
         onClick={this.toggle}
-        style={{ float: "left", marginRight: "13px" }}>{label}
+        >{label}
       </Button>
       title = '編集';
     } else {
-      button = <Button
-        color="success"
+      button = <Button id='account_add_button'
         onClick={this.toggle}
-        style={{ float: "left", marginRight: "13px" }}>{label}
+        >{label}
       </Button>
       title = '追加';
     }
