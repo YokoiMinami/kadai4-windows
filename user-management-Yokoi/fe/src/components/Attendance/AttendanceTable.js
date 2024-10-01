@@ -189,6 +189,7 @@ const AttendanceTablePage = ( ) => {
     }
   };
 
+
   return (
     <div id='table_flex'>
       <div id='table_box1'>
@@ -268,11 +269,10 @@ const AttendanceTablePage = ( ) => {
                     <td>{getDayOfWeek(date)}</td>
                     <td>{record ? formatTime(record.check_in_time) : '-'}</td>
                     <td>{record ? record.remarks1 : '-'}</td>
-                    {/* <td>{record ? record.remarks2 : '-'}</td> */}
-                    <td className='remarks2-column' dangerouslySetInnerHTML={{ __html: record ? formatRemarks(record.remarks2) : '-' }}></td>
+                    <td className='remarks2-td' style={{ textAlign: 'left' }} dangerouslySetInnerHTML={{ __html: record ? formatRemarks(record.remarks2) : '-' }}></td>
                     <td>{record ? formatTime(record.check_out_time) : '-'}</td>
                     <td>{record ? record.out_remarks1 : '-'}</td>
-                    <td className='remarks2-column' dangerouslySetInnerHTML={{ __html: record ? formatRemarks(record.out_remarks2) : '-' }}></td>
+                    <td className='remarks2-td' style={{ textAlign: 'left' }} dangerouslySetInnerHTML={{ __html: record ? formatRemarks(record.out_remarks2) : '-' }}></td>
                     <td>{record ? formatTime(record.break_time) : '-'}</td>
                     <td>{record ? formatTime(record.work_hours) : '-'}</td>
                   </tr>

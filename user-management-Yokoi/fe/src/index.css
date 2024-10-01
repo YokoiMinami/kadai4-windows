@@ -413,12 +413,6 @@ html {
   white-space: normal; /* 通常の空白処理 */
 }
 
-#at_tbody th {
-  padding: 5px;
-  border: 1px solid #266ebd;
-}
-
-
 .date-column {
   width: 100px; /* 日付列の幅 */
 }
@@ -437,8 +431,18 @@ html {
 
 .remarks2-column {
   width: 300px; 
-  text-align: left; /* 備考列の幅 */
 }
+
+#at_tbody th {
+  padding: 5px;
+  border: 1px solid #266ebd;
+  text-align: center;
+}
+
+#remarks2-td {
+  text-align: left;
+}
+
 
 
 /* th:first-child {
