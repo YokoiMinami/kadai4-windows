@@ -27,6 +27,21 @@ const postData = async (req, res, db) => {
     }));
 }
 
+const putData = async (req, res, db) => {
+
+  const { id, fullname, email, phone, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  await db('accounts').where({ id }).update({ fullname, email, phone, password: hashedPassword })
+    .returning('*')
+    .then(item => {
+      res.json(item);
+    })
+    .catch(err => res.status(400).json({
+      dbError: 'error'
+    }));
+}
+
 const loginData = async (req, res, db) => {
   const { email, password } = req.body;
   try {
@@ -80,18 +95,6 @@ const newData = async (req, res, db) => {
   }
 };
 
-const putData = (req, res, db) => {
-  const { id, fullname, email, phone, password } = req.body;
-  db('accounts').where({ id }).update({ fullname, email, phone, password })
-    .returning('*')
-    .then(item => {
-      res.json(item);
-    })
-    .catch(err => res.status(400).json({
-      dbError: 'error'
-    }));
-}
-
 const delData = (req, res, db) => {
   const { id } = req.body;
   db('accounts').where({ id }).del()
@@ -104,20 +107,6 @@ const delData = (req, res, db) => {
       dbError: 'error'
     }));
 }
-
-//勤怠
-// const attData = async (req, res, db) => {
-//   const { accounts_id, date, check_in_time, check_out_time, work_hours, remarks1, remarks2 } = req.body;
-//   await db('attendance').insert({ accounts_id, date, check_in_time, check_out_time, work_hours, remarks1, remarks2 })
-//   .returning('*')
-//   .then(item => {
-//   res.json(item);
-//   })
-//   .catch(err => res.status(400).json({
-//       dbError: 'error'
-//   }));
-// }
-
 
 const attData = async (req, res, db) => {
   const { accounts_id, date, check_in_time, check_out_time, break_time, work_hours, remarks1, remarks2, out_remarks1, out_remarks2 } = req.body;
