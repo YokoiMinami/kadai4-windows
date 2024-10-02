@@ -21,7 +21,7 @@ function LoginPage() {
       .then(data => {
         if (data.token) {
           login(data.token, data.user); // トークンを保存し
-          navigate('/top'); // トップページにリダイレクト
+          navigate('/'); // トップページにリダイレクト
         } else {
           setMessage('ログイン情報が違います');
         }

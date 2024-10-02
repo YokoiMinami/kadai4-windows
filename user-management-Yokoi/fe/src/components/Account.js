@@ -5,7 +5,7 @@ import AccountsTable from './Tables/AccountsTable';
 import AddEditModal from './Modals/AddEditModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Link } from 'react-router-dom';
 
 class Account extends Component {
   state = {

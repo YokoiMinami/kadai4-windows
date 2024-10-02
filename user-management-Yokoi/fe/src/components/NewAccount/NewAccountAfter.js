@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import OnesLogo from '../../images/ones-logo.png';
 import AccountLogo from '../../images/account-logo.png';
 import { Button } from 'reactstrap';
-import { BrowserRouter as Router, Route, Switch, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
 
 
 const NewAccountAfter = () => {

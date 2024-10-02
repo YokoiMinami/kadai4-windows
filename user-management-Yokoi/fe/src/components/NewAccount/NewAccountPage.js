@@ -1,9 +1,9 @@
-import React, { useEffect,useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import OnesLogo from '../../images/ones-logo.png';
 import AccountLogo from '../../images/account-logo.png';
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Form, FormGroup } from 'reactstrap';
 
 const NewAccountPage = (props) => {
 

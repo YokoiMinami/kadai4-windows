@@ -17,14 +17,14 @@ const postData = async (req, res, db) => {
     return res.status(400).json({ dbError: 'この電話番号は既に登録されています' });
   }
 
-    await db('accounts').insert({ fullname, email, phone, date, password: hashedPassword })
-    .returning('*')
-    .then(item => {
-    res.json(item);
-    })
+  await db('accounts').insert({ fullname, email, phone, date, password: hashedPassword })
+  .returning('*')
+  .then(item => {
+  res.json(item);
+  })
   .catch(err => res.status(400).json({
       dbError: 'error'
-    }));
+  }));
 }
 
 const putData = async (req, res, db) => {
@@ -33,13 +33,13 @@ const putData = async (req, res, db) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   await db('accounts').where({ id }).update({ fullname, email, phone, password: hashedPassword })
-    .returning('*')
-    .then(item => {
-      res.json(item);
-    })
-    .catch(err => res.status(400).json({
-      dbError: 'error'
-    }));
+  .returning('*')
+  .then(item => {
+    res.json(item);
+  })
+  .catch(err => res.status(400).json({
+    dbError: 'error'
+  }));
 }
 
 const loginData = async (req, res, db) => {
@@ -65,19 +65,19 @@ const loginData = async (req, res, db) => {
 };
 
 const getData = (req, res, db) => {
-    db.select('*').from('accounts')
-      .then(items => {
-        if (items.length) {
-          res.json(items);
-        } else {
-          res.json({
-            dataExists: 'false'
-          });
-        }
-      })
-      .catch(err => res.status(400).json({
-        dbError: 'error'
-      }));
+  db.select('*').from('accounts')
+  .then(items => {
+    if (items.length) {
+      res.json(items);
+    } else {
+      res.json({
+        dataExists: 'false'
+      });
+    }
+  })
+  .catch(err => res.status(400).json({
+    dbError: 'error'
+  }));
 }
 
 const newData = async (req, res, db) => {
@@ -98,14 +98,14 @@ const newData = async (req, res, db) => {
 const delData = (req, res, db) => {
   const { id } = req.body;
   db('accounts').where({ id }).del()
-    .then(() => {
-      res.json({
-        delete: 'true'
-      });
-    })
-    .catch(err => res.status(400).json({
-      dbError: 'error'
-    }));
+  .then(() => {
+    res.json({
+      delete: 'true'
+    });
+  })
+  .catch(err => res.status(400).json({
+    dbError: 'error'
+  }));
 }
 
 const attData = async (req, res, db) => {
@@ -127,7 +127,7 @@ const attData = async (req, res, db) => {
             out_remarks2,
             is_checked_in: false
           });
-        res.status(200).send('退勤登録完了！');
+        res.status(200).send('退勤登録完了');
       } else {
         res.status(400).send('既に退勤登録されています。');
       }
@@ -141,7 +141,7 @@ const attData = async (req, res, db) => {
         remarks2,
         is_checked_in: true
       });
-      res.status(200).send('出勤登録完了！');
+      res.status(200).send('出勤登録完了');
     }
   } catch (error) {
     console.error('Error recording attendance:', error);

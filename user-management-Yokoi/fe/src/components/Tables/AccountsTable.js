@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Button } from 'reactstrap';
+import { Button } from 'reactstrap';
 import AddEditModal from '../Modals/AddEditModal';
 
 class AccountsTable extends Component {
