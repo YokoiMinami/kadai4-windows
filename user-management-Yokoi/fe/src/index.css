@@ -470,12 +470,37 @@ html {
   text-align: left;
 }
 
+#attendance_link_area {
+  margin-left: 10px;
+  margin-top: 100px;
+  text-align: left;
+}
+
 /* メンバー管理 */
 #accout_page {
   background-color: #eeeeee;
   margin-top: 50px;
   font-family: "Yu Gothic Medium","遊ゴシック Medium",YuGothic,"遊ゴシック体","ヒラギノ角ゴ Pro W3",sans-serif;
   color: #808080;
+  padding: 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.container {
+  padding: 0; /* コンテナのパディングを削除 */
+  margin: 0; /* コンテナのマージンを削除 */
+}
+
+.row {
+  margin: 0; /* 行のマージンを削除 */
+}
+
+.col {
+  padding: 0; /* 列のパディングを削除 */
 }
 
 #account_h1 {
@@ -487,14 +512,13 @@ html {
   width: 100%;
   border-collapse: collapse;
   white-space: nowrap;
-  table-layout: fixed;
-  margin: auto;
+  table-layout: auto; /* fixedからautoに変更 */
   border: 1px solid #266ebd;
   background-color: white;
 }
 
 .ac_1 {
-  width: 5%;
+  width: 10%;
 }
 
 .ac_2 {
@@ -502,19 +526,19 @@ html {
 }
 
 .ac_3 {
-  width: 20%;
+  width: 30%;
 }
 
 .ac_4 {
-  width: 10%;
+  width: 15%;
 }
 
 .ac_5 {
-  width: 5%;
+  width: 10%;
 }
 
 .ac_6 {
-  width: 10%;
+  width: 15%;
 }
 
 #account_table td {
@@ -543,10 +567,12 @@ html {
   color: white;
   font-size: large;
   border-radius: 5px;
-  width: 150px;
+  width: 175px;
   height: 50px;
   border: 6px outset #266ebd;
   transition: 0.5s;
+  margin-bottom: 30px;
+  margin-right: 40px;
 } 
 
 #account_add_button:hover{
@@ -558,16 +584,25 @@ html {
   color: white;
   font-size: large;
   border-radius: 5px;
-  width: 200px;
-  height: 100px;
+  padding: 10px 10px;
   border: 6px outset #266ebd;
   transition: 0.5s;
   font-family: "Yu Gothic Medium","遊ゴシック Medium",YuGothic,"遊ゴシック体","ヒラギノ角ゴ Pro W3",sans-serif;
   text-decoration: none;
+  margin-right: 40px;
 }
 
 .custom-csv-link:hover {
   background-color: #023e8a;
+}
+
+#account_top_link {
+  color: inherit;
+}
+
+#accounto_link_area {
+  margin-top: 50px;
+  text-align: left;
 }
 
 /* th:first-child {

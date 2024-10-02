@@ -49,35 +49,38 @@ class Account extends Component {
   render() {
     return (
       <div id='accout_page'>
-        <Container>
-          <Row>
-            <Col>
+        <Container className="container">
+          <Row className="row">
+            <Col className="col">
               <h1 id='account_h1'>メンバー管理</h1>
             </Col>
           </Row>
-          <Row>
-            <Col>
-              <AccountsTable items={this.state.items} updateState={this.updateState} deleteItemFromState={this.deleteItemFromState} />
-            </Col>
-          </Row>
-          <Row>
-            <Col>
+          <Row className="row">
+            <Col md={2} className="col" id='add_button_area'>
               <AddEditModal buttonLabel="メンバー追加" addItemToState={this.addItemToState} />
               {this.state.items.length > 0 &&
                 <CSVLink
-                  className="custom-csv-link"
+                  className="custom-csv-link" 
                   filename={"accounts.csv"}
                   data={this.state.items}>
                   CSVエクスポート
                 </CSVLink>
               }
             </Col>
+            <Col md={10} className="col">
+              <AccountsTable items={this.state.items} updateState={this.updateState} deleteItemFromState={this.deleteItemFromState} />
+            </Col>
           </Row>
-          <Link to="/top">Go back to Home Page</Link>
+          <Row className="row" id='accounto_link_area'>
+            <Col className="col">
+              <Link to="/top" id='account_top_link'>← 勤怠一覧ページ</Link>
+            </Col>
+          </Row>
         </Container>
       </div>
     );
   }
+  
 }
 
 export default Account;

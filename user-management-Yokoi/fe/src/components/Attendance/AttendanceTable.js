@@ -337,6 +337,9 @@ const AttendanceTablePage = ( ) => {
             </form>
           </div>
         </div>
+        <div id='attendance_link_area'>
+          <Link to="/top" id='account_top_link'>← 勤怠一覧ページ</Link>
+        </div>
       </div>
       <div id='table_box2'>
         <h1 id='atH1'>勤怠一覧</h1>

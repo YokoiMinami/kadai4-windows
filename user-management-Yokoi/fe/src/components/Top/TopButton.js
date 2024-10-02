@@ -5,7 +5,7 @@ const TopButton = () => {
   const navigate = useNavigate();
   
   const handleClick1 = () => {
-    navigate('/attendance');
+    navigate('/top');
   };
 
   const handleClick2 = () => {
@@ -13,10 +13,6 @@ const TopButton = () => {
   };
 
   const handleClick3 = () => {
-    navigate('/equipment');
-  };
-
-  const handleClick4 = () => {
     navigate('/account');
   };
 
@@ -24,8 +20,8 @@ const TopButton = () => {
     <div>
       <button className='all_button' onClick={handleClick1}>勤怠登録</button>
       <button className='all_button' onClick={handleClick2}>勤怠一覧</button>
-      <button className='all_button' onClick={handleClick3}>機材管理</button>
-      <button className='all_button' onClick={handleClick4}>メンバー管理</button>
+      <button className='all_button' onClick={handleClick3}>メンバー管理</button>
+      {/* <button className='all_button' onClick={handleClick4}>機材管理</button> */}
     </div>
   );
 };

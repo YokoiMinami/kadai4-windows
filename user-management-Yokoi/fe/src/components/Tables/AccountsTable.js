@@ -54,7 +54,7 @@ class AccountsTable extends Component {
 
     return (
       <table id='account_table' responsive hover>
-        <thead>
+        <thead id='account_thead'>
           <tr>
             <th className ='ac_1'>ID</th>
             <th className ='ac_2'>氏名</th>
