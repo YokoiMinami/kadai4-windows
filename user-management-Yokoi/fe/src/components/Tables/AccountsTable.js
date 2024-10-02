@@ -64,9 +64,7 @@ class AccountsTable extends Component {
             <th className ='ac_6'></th>
           </tr>
         </thead>
-        <tbody>
-          {items}
-        </tbody>
+        <tbody>{items}</tbody>
       </table>
     )
   }

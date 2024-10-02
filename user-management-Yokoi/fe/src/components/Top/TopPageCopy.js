@@ -210,7 +210,6 @@ const TopPageCopy = () => {
       </div>
       <div className = "box2">
         <p>{userData.fullname}</p>
-        お知らせ
       </div>
       <div className = "box3">
         <h1>勤怠登録</h1>
